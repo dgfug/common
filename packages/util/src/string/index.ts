@@ -1,14 +1,12 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 /**
  * @summary Utility methods to convert to work with `string` values
  */
 
-export { stringCamelCase } from './camelCase';
-export { stringLowerFirst } from './lowerFirst';
-export { stringPascalCase } from './pascalCase';
-export { stringShorten } from './shorten';
-export { stringToHex } from './toHex';
-export { stringToU8a } from './toU8a';
-export { stringUpperFirst } from './upperFirst';
+export { stringCamelCase, stringPascalCase } from './camelCase.js';
+export { stringLowerFirst, stringUpperFirst } from './lowerFirst.js';
+export { stringShorten } from './shorten.js';
+export { stringToHex } from './toHex.js';
+export { stringToU8a } from './toU8a.js';

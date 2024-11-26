@@ -1,10 +1,12 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
 
 import { u8aEq, u8aToHex } from '@polkadot/util';
 import { waitReady } from '@polkadot/wasm-crypto';
 
-import { mnemonicToLegacySeed } from './';
+import { mnemonicToLegacySeed } from './index.js';
 
 const MNEMONIC = 'seed sock milk update focus rotate barely fade car face mechanic mercy';
 const SEED_32 = '0x3c121e20de068083b49c2315697fb59a2d9e8643c24e5ea7628132c58969a027';
@@ -15,32 +17,36 @@ describe('mnemonicToLegacySeed', (): void => {
     await waitReady();
   });
 
-  it.each([undefined, 'foo', 'bar'])('generates Wasm & Js equivalents (password = %p', (password): void => {
-    expect(
-      u8aEq(
-        mnemonicToLegacySeed(MNEMONIC, password, true),
-        mnemonicToLegacySeed(MNEMONIC, password, false)
-      )
-    ).toEqual(true);
-  });
-
-  describe.each([false, true])('onlyJs=%p', (onlyJs): void => {
-    it('generates a valid 64bytes seed', (): void => {
+  for (const password of [undefined, 'foo', 'bar']) {
+    it(`generates Wasm & Js equivalents for password=${password || 'undefined'}`, (): void => {
       expect(
-        u8aToHex(mnemonicToLegacySeed(MNEMONIC, undefined, onlyJs, 64))
-      ).toEqual(SEED_64);
+        u8aEq(
+          mnemonicToLegacySeed(MNEMONIC, password, true),
+          mnemonicToLegacySeed(MNEMONIC, password, false)
+        )
+      ).toEqual(true);
     });
+  }
 
-    it('generates a valid 32bytes seed', (): void => {
-      expect(
-        u8aToHex(mnemonicToLegacySeed(MNEMONIC, undefined, onlyJs))
-      ).toEqual(SEED_32);
-    });
+  for (const onlyJs of [false, true]) {
+    describe(`onlyJs=${(onlyJs && 'true') || 'false'}`, (): void => {
+      it('generates a valid 64bytes seed', (): void => {
+        expect(
+          u8aToHex(mnemonicToLegacySeed(MNEMONIC, undefined, onlyJs, 64))
+        ).toEqual(SEED_64);
+      });
 
-    it('fails with non-mnemonics', (): void => {
-      expect(
-        () => mnemonicToLegacySeed('foo bar baz', undefined, onlyJs)
-      ).toThrow(/mnemonic specified/);
+      it('generates a valid 32bytes seed', (): void => {
+        expect(
+          u8aToHex(mnemonicToLegacySeed(MNEMONIC, undefined, onlyJs))
+        ).toEqual(SEED_32);
+      });
+
+      it('fails with non-mnemonics', (): void => {
+        expect(
+          () => mnemonicToLegacySeed('foo bar baz', undefined, onlyJs)
+        ).toThrow(/mnemonic specified/);
+      });
     });
-  });
+  }
 });

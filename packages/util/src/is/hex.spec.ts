@@ -1,10 +1,14 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { isHex } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { perf } from '../test/index.js';
+import { isHex } from './index.js';
 
 describe('isHex', (): void => {
   const test = '1234abcd';
+  const ptest = `0x${'1234567890abcdef'.repeat(8192)}`;
 
   it('returns true on 0x hex values', (): void => {
     expect(
@@ -59,4 +63,15 @@ describe('isHex', (): void => {
       isHex('0x1234', 8)
     ).toEqual(false);
   });
+
+  it('does ignore lengths as required', (): void => {
+    expect(
+      isHex('0x123')
+    ).toEqual(false);
+    expect(
+      isHex('0x123', -1, true)
+    ).toEqual(true);
+  });
+
+  perf(`isHex (${(ptest.length - 2) / 2} bytes)`, 1000, [[ptest]], isHex);
 });

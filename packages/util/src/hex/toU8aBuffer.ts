@@ -1,11 +1,5 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
-
-import type { HexString } from '../types';
-
-import { assert } from '../assert';
-import { isHex } from '../is/hex';
-import { hexStripPrefix } from './stripPrefix';
 
 /**
  * @name hexToU8a
@@ -22,15 +16,16 @@ import { hexStripPrefix } from './stripPrefix';
  * hexToU8a('0x80001f', 32); // Uint8Array([0x00, 0x80, 0x00, 0x1f])
  * ```
  */
-export function hexToU8a (value?: HexString | string | null, bitLength = -1): Uint8Array {
-  if (!value) {
+export function hexToU8a (_value?: string | null, bitLength = -1): Uint8Array {
+  if (!_value) {
     return new Uint8Array();
   }
 
-  assert(isHex(value), () => `Expected hex value to convert, found '${value}'`);
-
-  const buf = Buffer.from(hexStripPrefix(value), 'hex');
-  const valLength = buf.length / 2;
+  const value = _value.startsWith('0x')
+    ? _value.substring(2)
+    : _value;
+  const buf = Buffer.from(value, 'hex');
+  const valLength = value.length / 2;
   const resultLength = Math.ceil(
     bitLength === -1
       ? valLength
@@ -41,7 +36,9 @@ export function hexToU8a (value?: HexString | string | null, bitLength = -1): Ui
     return Uint8Array.from(buf);
   }
 
-  const offset = Math.max(0, resultLength - valLength);
+  const offset = resultLength > valLength
+    ? resultLength - valLength
+    : 0;
 
   if (offset) {
     const u8a = new Uint8Array(resultLength);
@@ -51,5 +48,5 @@ export function hexToU8a (value?: HexString | string | null, bitLength = -1): Ui
     return u8a;
   }
 
-  return Uint8Array.from(buf.slice(0, resultLength));
+  return Uint8Array.from(buf.subarray(0, resultLength));
 }

@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { evmToAddress } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { evmToAddress } from './index.js';
 
 describe('evmToAddress', (): void => {
   it('creates a valid known SS58 address', (): void => {

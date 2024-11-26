@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import { TextDecoder } from '@polkadot/x-textdecoder';
@@ -20,7 +20,7 @@ const decoder = new TextDecoder('utf-8');
  * ```
  */
 export function u8aToString (value?: Uint8Array | null): string {
-  return !value?.length
-    ? ''
-    : decoder.decode(value);
+  return value
+    ? decoder.decode(value)
+    : '';
 }

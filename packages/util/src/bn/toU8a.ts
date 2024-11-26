@@ -1,31 +1,12 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { ToBn, ToBnOptions } from '../types';
-import type { BN } from './bn';
+import type { NumberOptions, ToBn } from '../types.js';
+import type { BN } from './bn.js';
 
-import { isNumber } from '../is/number';
-import { objectSpread } from '../object/spread';
-import { bnToBn } from './toBn';
+import { bnToBn } from './toBn.js';
 
-interface Options extends ToBnOptions {
-  bitLength?: number;
-}
-
-function createEmpty (byteLength: number, options: Options): Uint8Array {
-  return options.bitLength === -1
-    ? new Uint8Array()
-    : new Uint8Array(byteLength);
-}
-
-function createValue (valueBn: BN, byteLength: number, { isLe, isNegative }: Options): Uint8Array {
-  const output = new Uint8Array(byteLength);
-  const bn = isNegative ? valueBn.toTwos(byteLength * 8) : valueBn;
-
-  output.set(bn.toArray(isLe ? 'le' : 'be', byteLength), 0);
-
-  return output;
-}
+const DEFAULT_OPTS: NumberOptions = { bitLength: -1, isLe: true, isNegative: false };
 
 /**
  * @name bnToU8a
@@ -41,24 +22,24 @@ function createValue (valueBn: BN, byteLength: number, { isLe, isNegative }: Opt
  * bnToU8a(new BN(0x1234)); // => [0x12, 0x34]
  * ```
  */
-function bnToU8a <ExtToBn extends ToBn> (value?: ExtToBn | BN | bigint | number | null, options?: Options): Uint8Array;
-function bnToU8a <ExtToBn extends ToBn> (value?: ExtToBn | BN | bigint | number | null, bitLength?: number, isLe?: boolean): Uint8Array;
-function bnToU8a <ExtToBn extends ToBn> (value?: ExtToBn | BN | bigint | number | null, arg1: number | Options = { bitLength: -1, isLe: true, isNegative: false }, arg2?: boolean): Uint8Array {
-  const options: Options = objectSpread(
-    { bitLength: -1, isLe: true, isNegative: false },
-    isNumber(arg1)
-      ? { bitLength: arg1, isLe: arg2 }
-      : arg1
-  );
-
+export function bnToU8a <ExtToBn extends ToBn> (value?: ExtToBn | BN | bigint | number | null, { bitLength = -1, isLe = true, isNegative = false } = DEFAULT_OPTS): Uint8Array {
   const valueBn = bnToBn(value);
-  const byteLength = options.bitLength === -1
+  const byteLength = bitLength === -1
     ? Math.ceil(valueBn.bitLength() / 8)
-    : Math.ceil((options.bitLength || 0) / 8);
+    : Math.ceil((bitLength || 0) / 8);
 
-  return value
-    ? createValue(valueBn, byteLength, options)
-    : createEmpty(byteLength, options);
+  if (!value) {
+    return bitLength === -1
+      ? new Uint8Array(1)
+      : new Uint8Array(byteLength);
+  }
+
+  const output = new Uint8Array(byteLength);
+  const bn = isNegative
+    ? valueBn.toTwos(byteLength * 8)
+    : valueBn;
+
+  output.set(bn.toArray(isLe ? 'le' : 'be', byteLength), 0);
+
+  return output;
 }
-
-export { bnToU8a };

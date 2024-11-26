@@ -1,11 +1,835 @@
 # CHANGELOG
 
-## master
+## 13.2.3 Nov 11, 2024
+
+Contributed:
+
+- Add Vara support to the Generic Ledger App ([#1958](https://github.com/polkadot-js/common/pull/1958)) (Thanks to https://github.com/breathx)
 
 Changes:
 
-- Add `stringPascalCase` utility
+- Bump Dev to 0.82.1 ([#1959](https://github.com/polkadot-js/common/pull/1959))
+
+
+## 13.2.2 Oct 28, 2024
+
+Contributed:
+
+- Add Polimec support to the Generic Ledger App ([#1945](https://github.com/polkadot-js/common/pull/1945)) (Thanks to https://github.com/lrazovic)
+- Add Frequency to the Generic Ledger App ([#1955](https://github.com/polkadot-js/common/pull/1955)) (Thanks to https://github.com/wilwade)
+
+Changes:
+
+- Bump yarn to 4.5.1 ([#1953](https://github.com/polkadot-js/common/pull/1953))
+
+
+## 13.2.1 Oct 21, 2024
+
+Contributed:
+
+- Add bittensor to genericLedgerApps (Thanks to https://github.com/camfairchild) ([#1941](https://github.com/polkadot-js/common/pull/1941))
+
+Changes:
+
+- Fix Deno CI Build ([#1947](https://github.com/polkadot-js/common/pull/1947))
+- Bump yarn to 4.5.0 ([#1946](https://github.com/polkadot-js/common/pull/1946))
+- Update Ledger Deps ([#1948](https://github.com/polkadot-js/common/pull/1948))
+- Update WS and deps ([#1949](https://github.com/polkadot-js/common/pull/1949))
+- Bump polkadot/wasm to 7.4.1 ([#1950](https://github.com/polkadot-js/common/pull/1950))
+- Bump dev to 0.81.2 ([#1951](https://github.com/polkadot-js/common/pull/1951))
+  - Allows for CJS target in build
+
+
+## 13.1.1 Sep 16, 2024
+
+Contributed:
+
+HydraDx - Hydration Rebrand Thanks to (https://github.com/jak-pan) ([#1923](https://github.com/polkadot-js/common/pull/1923))
+
+Changes:
+
+- Update all deps that have patch releases ([#1934](https://github.com/polkadot-js/common/pull/1934))
+- Bump yarn to 4.4.1 ([#1940](https://github.com/polkadot-js/common/pull/1940))
+- Update ss58-registry to 1.50.0 ([#1937](https://github.com/polkadot-js/common/pull/1937))
+- Update dev and typescript ([#1936](https://github.com/polkadot-js/common/pull/1936))
+- Add Encointer and Integritee to Ledger, and adjust tests ([#1939](https://github.com/polkadot-js/common/pull/1939))
+  - This PR added the addition of `genericLedgerApps` and `prevLedgerRecord` objects. They both combine into `ledgerApps` in `hw-ledger/defaults`.
+
+
+## 13.0.2 July 12, 2024
+
+Contributed:
+
+- Add peaq support for ledger (Thanks to https://github.com/lavish0000)
+
+
+## 13.0.1 July 12, 2024
+
+Breaking Changes:
+
+- Add Support for latest Ledger App
+  - This deprecates `class Ledger` in favor of `class LedgerGeneric`
+  - More info in the following PR ([#1925](https://github.com/polkadot-js/common/pull/1925))
+
+Changes:
+
+- Bump dev to 0.79.1
+- Comments around pair encode/decode 1-3
+- Bump ws, react-native, ss58Registry
+- Bump yarn to 4.3.1
+- Update CI to checkout and setup_node v4
+
+
+## 12.6.2 Dec 18, 2023
+
+Changes:
+
+- Update to latest `@polkadot/wasm-crypto`
+- Upgrade dependencies to latest versions
+
+
+## 12.6.1 Nov 18, 2023
+
+Contributed:
+
+- Ledger support for Quartz (Thanks to https://github.com/CertainLach)
+- Add flag to disable same-version esm/cjs warnings (Thanks to https://github.com/forgetso)
+
+Changes:
+
+- Adjust logger check for `process.env`
+- Adjust `isRiscV` helper to check for `PVM\0` bytes
+- Drop support for Node 16 (EOL 11 Sep 2023)
+- Upgrade dependencies to latest stable versions
+
+
+## 12.5.1 Sep 15, 2023
+
+Contributed:
+
+- Add `isRiskV` helper (Thanks to https://github.com/peetzweg)
+- Ledger support for Enjin & Matrixchain (Thanks to https://github.com/leonardocustodio)
+
+Changes:
+
+- Expand interface type comments (assists in-editor helpers)
+- Upgrade dependencies to latest stable versions
+
+
+## 12.4.2 Aug 23, 2023
+
+Changes:
+
+- Fix `u8aTo{BigInt, Bn, Number}` for non-negative `i{8, 16, 32...}` inputs
+- Extend `u8aToBuffer` with `hasBuffer` check
+- Adjust util tests (extract input/output arrays)
+
+
+## 12.4.1 Aug 17, 2023
+
+Changes:
+
+- Add support for Ledger `signRaw`, as exposed by lower-level
+- Update code to use `?.` shortcuts where appropriate
+- Adjust `u8aToBuffer` & `isBuffer` typings to not require `Buffer`
+- Use `stringify/import.meta.url` helpers in specs
+- Upgrade dependencies to latest stable versions
+
+
+## 12.3.2 Jun 12, 2023
+
+Changes:
+
+- Adjust `SubstrateNetwork` typing with `HexString` genesisHash
+- Re-export `Constructor<T>` type (deprecated, replaced with `Class<T>`)
+
+
+## 12.3.1 Jun 11, 2023
+
+Changes:
+
+- Only allow padding characters in base64 strings
+- Expand typings for keyring meta with known keys
+- Adjust object index access for stricter tsconfig settings
+
+
+## 12.2.2 Jun 4, 2023
+
+Changes:
+
+- Apply missing count assignment for `for (...)` loops
+- Remove unused `@types/*` dev dependencies
+- Upgrade dependencies to latest stable versions
+
+
+## 12.2.1 May 13, 2023
+
+Changes:
+
+- Align `u8aToBigInt` tests with `u8aToBn`
+- Unroll loops on most-frequently used paths for `u8aToBigInt`
+- Add `module` to `package.json` export map (ESM-only)
+- Upgrade dependencies to latest stable versions
+
+
+## 12.1.2 May 1, 2023
+
+Changes:
+
+- Adjust typing for `isChildClass` & `Constructor` usage
+
+
+## 12.1.1 Apr 29, 2023
+
+Changes:
+
+- Add shareable `identity` & `noop` functions
+- Flatten `Buffer | Uint8Array` types (as used) to base-only `Uint8Array`
+- Apply `readonly` specifiers to private class fields where applicable
+- Adjust compilation output for `__internal__` class fields
+- Remove unused types from `util`
+- Upgrade dependencies to latest stable versions
+
+
+## 12.0.1 Apr 22, 2023
+
+Contributed:
+
+- Add Cere genesisHash (Thanks to https://github.com/shamilkhan)
+
+Changes:
+
+- Swap secp256k1 functionality to `@noble/curves`
+- Swap ed25519 functionality to `@noble/curves`
+- Replace `tweetnacl` secretbox usage with slimmer local version
+- Adjust `isCodec` helper with closer API alignment
+- Initial steps to multi-language bip39 support
+- Use Node webcrypto for Node `getRandomValues` support
+- Upgrade dependencies to latest stable versions
+- Drop support for Node 14 (EOL 30 Apr 2023)
+
+
+## 11.1.3 Apr 1, 2023
+
+Contributed:
+
+- Add Bittensor genesisHash (Thanks to https://github.com/camfairchild)
+
+Changes:
+
+- Allow empty string as valid base32/base58/base64 decoder input
+- Add additional/missing `/*#__PURE__*/` annotations
+- Upgrade dependencies to latest stable versions
+
+
+## 11.1.2 Mar 25, 2023
+
+Changes:
+
+- Expand error details for invalid publicKeys in secp256k1 compress/expand operations
+- Expand `@polkadot/hw-ledger` with specific per-method JSDoc
+- Upgrade dependencies to latest stable versions
+
+
+## 11.1.1 Mar 18, 2023
+
+Contributed:
+
+- Add 3DPass genesisHash (Thanks to https://github.com/fedosov)
+
+Changes:
+
+- Remove support for encrypt/decrypt functionality on keypair
+- Upgrade dependencies to latest stable versions
+
+
+## 11.0.2 Mar 11, 2023
+
+Changes:
+
+- Use consistent `.js` imports in source files (TS moduleResolution)
+- Remove TS resolveJsonModule option
+- Upgrade to `@polkadot/wasm-crypto` 7.0.3
+
+
+## 11.0.1 Mar 4, 2023
+
+Changes:
+
+- Change `@polkadot/x-ws` to use [ws](https://www.npmjs.com/package/ws) package (previous: `websocket`)
+- Add `/*#__PURE__*/` annotations for `@polkadot/x-*` packages
+- Swap TS -> JS compiler to use tsc (from babel)
+- Adjust all tests to use `node:test` runner (ESM variants)
+- Move `cryptoWaitReady()` top-level in test files
+- Upgrade to `@polkadot/wasm-crypto` 7.0.1
+
+
+## 10.4.2 Feb 19, 2023
+
+Contributed:
+
+- Ledger support for Pendulum (Thanks to https://github.com/carlosala)
+
+Changes:
+
+- Ensure `u8aToU8a` correctly unwraps Buffer value (check ordering)
+- Upgrade dependencies to latest stable versions
+
+
+## 10.4.1 Feb 12, 2023
+
+Contributed:
+
+- Locale support for number formatting (Thanks to https://github.com/alko89)
+- Ledger support for Picasso (Thanks to https://github.com/carlosala)
+
+Changes:
+
+- Add `isClass` helper (checks if input is actual Class Constructor)
+- Adjust `isChildClass` to rely on new `isClass`
+- Upgrade dependencies to latest stable versions
+
+
+## 10.3.1 Jan 28, 2023
+
+Contributed:
+
+- Ledger support for Ternoa (Thanks to https://github.com/mohsinriaz17)
+
+Changes:
+
+- Expand `arrayChunk` tests
+- Adjust output for Ledger sanity checks
+- Expand exported `bigint` constants to match with those in `BN`
+- Adjust internal character maps to operate on `Uint8Array` instad of `Array<number>`
+- Upgrade dependencies to latest stable versions
+
+
+## 10.2.6 Jan 13, 2023
+
+Changes:
+
+- Drop stray `console.error` log (it really _is_ Friday 13th)
+
+
+## 10.2.5 Jan 13, 2023
+
+Changes:
+
+- Bugfix for `formatBalance` (forceUnit) with `BN` inputs where output is less than 0
+
+
+## 10.2.4 Jan 13, 2023
+
+Changes:
+
+- Add the `withAll` (default false) flag to `formatBalance` to format to max decimals
+- Add the `withZero` (default true) flags to `formatBalance` to retain trailing zeros
+
+
+## 10.2.3 Jan 7, 2023
+
+Changes:
+
+- Adjust `isBuffer` check on `xglobal` (no auto-polyfill detection on eg. parcel)
+- Upgrade dependencies to latest stable versions
+
+
+## 10.2.2 Jan 6, 2023
+
+Contributed:
+
+- Adjust Nodle Ledger mapping (Thanks to https://github.com/aliXsed)
+
+Changes:
+
+- Upgrade dependencies to latest stable versions
+
+
+## 10.2.1 Dec 4, 2022
+
+Contributed:
+
+- Ledger support for Ajuna (Thanks to https://github.com/carlosala)
+
+Changes:
+
+- `has{Buffer, Process}` now checks on `globalThis` (helps bundlers with auto-injection)
+- Add `/*#__PURE__*/` annotations for specific `export const something = someFunction(...)`
+- Upgrade dependencies to latest stable versions
+- Upgrade to `@polkadot/wasm-crypto` 6.4.1
+
+
+## 10.1.14 Nov 27, 2022
+
+Changes:
+
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.13 Nov 20, 2022
+
+Contributed:
+
+- Ledger support for Origintrail (Thanks to https://github.com/carlosala)
+
+Changes:
+
+- Expand type descriptions around Ledger-based structures
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.12 Nov 13, 2022
+
+Changes:
+
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.11 Oct 15, 2022
+
+Changes:
+
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.10 Oct 7, 2022
+
+Changes:
+
+- Ensure `{bn, n, number}ToHex(0)` always respects `bitLength`
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.9 Sep 24, 2022
+
+Contributed:
+
+- Ledger support for VTB (Thanks to https://github.com/GuilaneDen)
+
+Changes:
+
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.8 Sep 17, 2022
+
+Contributed:
+
+- Ledger support for Darwinia, Phala & Khala (Thanks to https://github.com/carlosala)
+- Ledger support for HydraX (Thanks to https://github.com/chcmedeiros)
+
+Changes:
+
+- Expand test cases
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.7 Sep 2, 2022
+
+Changes:
+
+- Hoist Ledger interface wrapError (internal adjustment)
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.6 Aug 23, 2022
+
+Changes:
+
+- Adjust `nextTick` with greater care for browser loops
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.5 Aug 21, 2022
+
+Changes:
+
+- Adjust `ledgerApps` to use new `@zondax/ledger-substrate` interfaces
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.4 Aug 12, 2022
+
+Contributed:
+
+- Ledger support for Kusama Bifrost (Thanks to https://github.com/awesomepan)
+
+Changes:
+
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.3 Aug 5, 2022
+
+Changes:
+
+- Optimization for empty `arrayFlatten` case
+- Coding cleanups for logger (no `as` casting)
+- Optiomizations in assertion checks
+
+
+## 10.1.2 Jul 29, 2022
+
+Changes:
+
+- Upgrade dependencies to latest stable versions
+
+
+## 10.1.1 Jul 21, 2022
+
+Changes:
+
+- Add `arrayUnzip` as reverse of `arrayZip`
+- Adjust `objectSpread` to natively handle `Map` entries spreads
+- Adjust `isAscii` check to disallow `\t`, `\n`, & `\r` characters
+- Adjust `nobody` zero-key pair with pre-computed address
+- Align `objectProperty` & `lazyMethod` call signatures (backwards compatible)
+- Various internal speed optimizations
+- Upgrade dependencies to latest stable versions
+
+
+## 10.0.2 Jul 10, 2022
+
+Changes:
+
+- Adjust async import in `x-fetch` to be Jest-friendly
+
+
+## 10.0.1 Jul 8, 2022
+
+- **Breaking change** In this major version version previously deprecated function signatures have been removed. If still using the old forms for either `bnToHex`, `bnToU8a`, `formatBalance`, `hexToBn` or `u8aToBn`, please update and only pass through an options object as the second parameter.
+
+Contributed:
+
+- Ledger support for Stafi (Thanks to https://github.com/kaelnew)
+- Ledger support for Aleph Zero (Thanks to https://github.com/carlosala)
+- Add genesis for HydraDX parachain (Thanks to https://github.com/jak-pan)
+
+Changes:
+
+- Remove deprecated signatures for `bnToHex`, `bnToU8a`, `formatBalance`, `hexToBn`, `u8aToBn`
+- Align option handling of `n*` (BigInt) functions with `bn*` (BN)
+- Allow for usage without `@types/node` installed
+- Adjust for available ESM-only dependencies
+- Upgrade dependencies to latest stable versions
+- Upgrade to `@polkadot/wasm-crypto` 6.2.3
+
+
+## 9.7.2 Jul 4, 2022
+
+Changes:
+
+- Upgrade to `@polkadot/wasm-crypto` 6.2.2
+
+
+## 9.7.1 Jul 1, 2022
+
+Changes:
+
+- Update signatures where `readonly` arrays are used
+- Upgrade dependencies to latest stable versions
+- Upgrade to `@polkadot/wasm-crypto` 6.2.1
+
+
+## 9.6.2 Jun 25, 2022
+
+Changes:
+
+- Fix `hexToU8a` where `0x` is not correctly converted
+
+
+## 9.6.1 Jun 23, 2022
+
+Changes:
+
+- Add `floatToU8a` and `u8aToFloat` (both 32 & 64-bit, le & be)
+- Adjust `isUndefined` check (local variable available)
+- Adjust use of `assert`, `isUndefined` & `isNull`
+
+
+## 9.5.1 Jun 18, 2022
+
+Contributed:
+
+- Update Bifrost genesisHash (Thanks to https://github.com/awesomepan)
+- Add Ledger support for Composable (Thanks to https://github.com/carlosala)
+
+Changes:
+
+- Add `u8aToNumber` (limited, <= 48 bits) function
+- Use `~~` as bitwise/faster `Math.floor` replacement
+- Remove unneeded `objectSpread` option expansions
+- Optimize `hexToU8a` operations
+- Optimize `stringCamelCase` operations
+- Optimize `u8aToBn` operations
+- Additional internal/external comments (as missing)
+- Upgrade dependencies to latest stable versions
+
+
+## 9.4.1 Jun 4, 2022
+
+Changes:
+
+- Add `nextTick` to `@polkadot/util` to defer execution to the queue
+- Upgrade dependencies to latest stable versions
+
+
+## 9.3.1 May 29, 2022
+
+Contributed:
+
+- Add Ledger support for Parallel (Thanks to https://github.com/carlosala)
+- Add Ledger support for Astar & Polkadex (Thanks to https://github.com/carlosala)
+
+Changes:
+
+- Adjust `u8aToU8a` checks with better `isU8a` shortcut
+- Adjust compact conversion with unrolled loops
+- Adjust `string{Camel, Pascal}Case` with loop (no map)
+- Add `compactFromU8aLim` variant with Uint8Array-only inputs
+- Add `u8aConcatStrict` variant with Uint8Array-only inputs
+- Internal code maintainability enhancements
+- Upgrade dependencies to latest stable versions
+
+
+## 9.2.1 May 13, 2022
+
+Contributed:
+
+- Add Ledger support for Acala (Thanks to https://github.com/ntduan)
+
+Changes:
+
+- Optimize `u8aToHex` with direct (non-hex) conversion
+- Change all occurences of `.substr(...)` to `.substring(...)`
+- Sync with upstream Substrate ss58 registry
+- Mark deprecated function signatures (no removals)
+- Re-enable auto init of `cryptoWaitReady()`
+- Upgrade to `@polkadot/wasm-crypto` 6.1.1
+
+
+## 9.1.1 Apr 30, 2022
+
+Contributed:
+
+- Add Ledger support for Statemint (Thanks to https://github.com/carlosala)
+- Add Ledger support for xxnetwork (Thanks to https://github.com/xx-labs)
+
+Changes:
+
+- Adjust/dedupe output from `detectPackage`
+- Adjust `isHex` performance test
+- Add field-level comments to some `*Options` structures
+- Add new Rococo genesisHash (reset)
+
+
+## 9.0.1 Apr 9, 2022
+
+- **Breaking change** In this major version the commonjs outputs are moved to a sub-folder. Since the export map and main field in package.json does reflect this change, there should be no usage changes. However the packages here will all need to be on the same version for internal linkage.
+
+Changes:
+
+- Be explicit in `@polkadot/util-crypto` re-exports from `@polkadot/networks`
+- Output commonjs files under the `cjs/**` root
+- Upgrade to `@polkadot/wasm-crypto` 6.0.1
+
+
+## 8.7.1 Mar 27, 2022
+
+Changes:
+
+- Fix race-condition with wasm overrides, make `cryptoWaitReady` lazy
+- Additional tests for `BN` & `BigInt` negative conversions
+- Upgrade to `@polkadot/wasm-crypto` 5.1.1
+
+
+## 8.6.1 Mar 19, 2022
+
+**Important** This contains an upgraded version of `@polkadot/wasm-crypto`. For users of asm.js, e.g. React Native, there are some additional upgrade instructions in the release notes for this version https://github.com/polkadot-js/wasm/releases/tag/v5.0.1
+
+Contributed:
+
+- Add aditional Dock mainnet genesis (Thanks to https://github.com/lovesh)
+- Add Westend genesis (Thanks to https://github.com/Nick-1979)
+- Update README with ss58 links (Thanks to https://github.com/Nick-197)
+
+Changes:
+
+- Ensure invalid secp256k1 publicKeys are not returned
+- Cater for Expo v41+ in RN random value generation
+- Fixed for RN environment imports
+- Internal split of details in `@polkadot/networks`
+- Additional workaround for Vite bundling
+- Upgrade to `@polkadot/wasm-crypto` 5.0.1
+
+
+## 8.5.1 Mar 12, 2022
+
+Changes:
+
+- Adjust for bundlers where `import.meta.url` is undefined
+- Upgrade dependencies to latest stable versions
+
+
+## 8.4.1 Feb 14, 2022
+
+Changes:
+
+- Use upstream `@substrate/ss58-registry` (instead of duplicating here)
+- Swap `micro-base` to `@scure/base` (same package, audited)
+- Bump `bn.js` library to latest 5.2.0 (has impact on e.g. API)
+- Upgrade dependencies to latest stable versions
+
+
+## 8.3.3 Jan 23, 2022
+
+Changes:
+
+- Sync with upstream Substrate ss58 registry
+
+
+## 8.3.2 Jan 15, 2022
+
+Changes:
+
+- Correct network sorting (primary by prefix, secondary by name)
+- Sync with upstream Substrate ss58 registry
+
+
+## 8.3.1 Jan 9, 2022
+
+Changes:
+
+- Fix `util-crypto` bundle generation (adjust `x-randomvalues`)
+- Add all known Rococo genesis hashes
+- `detectPackage` now uses optional `path` & `type` (`esm` or `cjs`) info
+- Ensure package paths are available via ESM and CJS
+- Upgrade 3rd party dependencies to latest
+- Pin `@noble/*` to latest known tested integrated versions
+
+
+## 8.2.2 Dec 19, 2021
+
+Contributed:
+
+- Add Bifrost Ledger capabilities (Thanks to https://github.com/awesomepan)
+- Add Sora genesisHash & Ledger capabilities (Thanks to https://github.com/NoodleSploder)
+
+Changes:
+
+- Add `isPromise` check utility function
+- Add `assertUnreachable` for codepaths that should not be followed
+- Preserve all-caps word splits in `stringCamelCase`
+- Adjust `x-*` fallbacks via `x-global/extractGlobal`
+- Sync with upstream Substrate ss58 registry
+- Additional tests for `bip39` wordlists
+- Maintainability cleanups
+- Update to latest Ledger dependencies
+- Swap to upstream `@noble` packages
+- Adjust tsconfig with references
+- 8.2.2 (8.2.1 failed CI due to incorrect CHANGELOG)
+
+
+## 8.1.2 Dec 5, 2021
+
+Changes:
+
+- Adjustment to non-full-word consecutive uppercase via `string{Camel, Pascal}Case`
+
+
+## 8.1.1 Dec 5, 2021
+
+Contributed:
+
+- Add Picasso genesisHash (Thanks to https://github.com/hussein-aitlahcen)
+
+Changes:
+
+- Allow for use of `secp256k1` from `@polkadot/wasm-crypto`
+- Adjust `isBigInt` to not do `instanceof` check
+- Ensure consequtive capitals in `stringCamelCase` are lowercased
+- Use `@polkadot/x-bigint` for `BigInt` constructor
+- Split `@noble/hashes` fork into `x-noble-hashes`
+- Add `@noble/secp256k1` fork into `x-noble-secp256k1`, replaces `elliptic`
+
+
+## 8.0.5 Dec 1, 2021
+
+Changes:
+
+- Adjust sha3 expectation of `BigInt` availability
+
+
+## 8.0.4 Nov 30, 2021
+
+Changes:
+
+- Adjust `stringCamelCase` with leading `_`
+
+
+## 8.0.3 Nov 30, 2021
+
+Changes:
+
+- Remove `Buffer` usage in `x-randomvalues`
+- Adjust `stringCamelCase` for all-caps parts
+
+
+## 8.0.2 Nov 26, 2021
+
+Changes:
+
+- Explicitly include BigInt patched versions
+
+
+## 8.0.1 Nov 26, 2021
+
+**Important** In the 8.0 version the hashing utilities have been consolidated around an optimized and audited version from `@noble/hashes`. As in the past the WASM hashing will be used by default if the environment is initialized.
+
+**Breaking change** The `schnorrkel*` functions have been renamed to `sr25519*`. Likewise the `ed25519` operations have been renamed from `nacl*` to `ed25519*`. Additionally the `{ed, sr, secp256k1}25519KeyPairFrom*` functions have been renamed to `{ed, sr, secp256k1}25519PairFrom*`.
+
+Changes:
+
+- Introduce `ed25519*` & `sr25519*` functions
+- Replace camelcase dep with simplified/optimized version
+- Replace (most) hashing operations with `@noble/hashes`
+- Replace JS fallback for `xxhash`
+- Adjust `BigInt` utility exports (with capability detection)
+- Previously added `bi*` functions renamed to `n*`
+- Extend performance tests with implementation compares
+- Remove non-significant Node Buffer concat fill
+
+
+## 7.9.2 Nov 22, 2021
+
+Changes:
+
+- Fix TS compiled definitions for `base*` types
+- Provide JS/Wasm interfaces for `hmacShaAsU8a`
+
+
+## 7.9.1 Nov 21, 2021
+
+Contributed:
+
+- Updated Polymesh genesisHash (Thanks to https://github.com/adamdossa)
+
+Changes:
+
 - Add strongly typed `object{Entries, Keys, Values}` utilities
+- Add `{hex, u8a}ToBigInt` utilities
+- Add `bi*` utilities for `bigint` operations (mirror of `bn*`)
+- Add `stringPascalCase` utility
+- Add `isCodec` to check for Codec-like structures
+- Add `has*` detection shortcuts (e.g. `hasWasm` or `hasBuffer`)
+- Add `sha256AsU8a` util (& replace use internally)
+- Optimize for `hexToU8a` and `u8aToHex` functions
+- Optimize `u8aEq` to use `DataView` for compares
+- Align `base{32, 58, 64}*` around (audited) `micro-base`
+- Space optimization for bip39 wordlists
+- Sync with upstream Substrate ss58 registry
+- Expand tests for uncovered functions
 
 
 ## 7.8.2 Nov 7, 2021

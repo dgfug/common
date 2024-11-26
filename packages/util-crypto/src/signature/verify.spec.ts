@@ -1,11 +1,13 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
 
 import { hexToU8a, stringToU8a, u8aConcat, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import { waitReady } from '@polkadot/wasm-crypto';
 
-import { decodeAddress } from '../address';
-import { signatureVerify } from '.';
+import { decodeAddress } from '../address/index.js';
+import { signatureVerify } from './index.js';
 
 const ADDR_ED = 'DxN4uvzwPzJLtn17yew6jEffPhXQfdKHTp2brufb98vGbPN';
 const ADDR_SR = 'EK1bFgKm2FsghcttHT7TB7rNyXApFgs9fCbijMGQNyFGBQm';

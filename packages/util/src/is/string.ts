@@ -1,5 +1,7 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
+import type { AnyString } from '../types.js';
 
 /**
  * @name isString
@@ -15,7 +17,6 @@
  * console.log('isString', isString('test')); // => true
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function isString (value: unknown): value is string | String {
+export function isString (value: unknown): value is AnyString {
   return typeof value === 'string' || value instanceof String;
 }

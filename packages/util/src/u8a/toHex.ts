@@ -1,37 +1,37 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexDigit, HexString } from '../types';
+import type { HexString } from '../types.js';
 
-import { arrayRange } from '../array';
+const U8 = new Array<string>(256);
+const U16 = new Array<string>(256 * 256);
 
-type HexByte = `${HexDigit}${HexDigit}`;
+for (let n = 0; n < 256; n++) {
+  U8[n] = n.toString(16).padStart(2, '0');
+}
 
-const ALPHABET = arrayRange(256).map((n) => n.toString(16).padStart(2, '0') as HexByte);
+for (let i = 0; i < 256; i++) {
+  const s = i << 8;
+
+  for (let j = 0; j < 256; j++) {
+    U16[s | j] = U8[i] + U8[j];
+  }
+}
 
 /** @internal */
-function extract (value: Uint8Array): string {
-  const result = new Array<HexByte>(value.length);
+function hex (value: Uint8Array, result: HexString): HexString {
+  const mod = (value.length % 2) | 0;
+  const length = (value.length - mod) | 0;
 
-  for (let i = 0; i < value.length; i++) {
-    result[i] = ALPHABET[value[i]];
+  for (let i = 0; i < length; i += 2) {
+    result += U16[(value[i] << 8) | value[i + 1]];
   }
 
-  return result.join('');
-}
+  if (mod) {
+    result += U8[value[length] | 0];
+  }
 
-/** @internal */
-function unprefixed (value: Uint8Array, bitLength = -1): string {
-  const byteLength = Math.ceil(bitLength / 8);
-
-  return (byteLength > 0 && value.length > byteLength)
-    ? trim(value, Math.ceil(byteLength / 2))
-    : extract(value);
-}
-
-/** @internal */
-function trim (value: Uint8Array, halfLength: number): string {
-  return `${unprefixed(value.subarray(0, halfLength))}…${unprefixed(value.subarray(value.length - halfLength))}`;
+  return result;
 }
 
 /**
@@ -49,9 +49,20 @@ function trim (value: Uint8Array, halfLength: number): string {
  * ```
  */
 export function u8aToHex (value?: Uint8Array | null, bitLength = -1, isPrefixed = true): HexString {
-  return `${isPrefixed ? '0x' : ''}${
-    !value || !value.length
-      ? ''
-      : unprefixed(value, bitLength)
-  }` as HexString;
+  // this is not 100% correct sinmce we support isPrefixed = false....
+  const empty = isPrefixed
+    ? '0x'
+    : '' as HexString;
+
+  if (!value?.length) {
+    return empty;
+  } else if (bitLength > 0) {
+    const length = Math.ceil(bitLength / 8);
+
+    if (value.length > length) {
+      return `${hex(value.subarray(0, length / 2), empty)}…${hex(value.subarray(value.length - length / 2), '' as HexString)}`;
+    }
+  }
+
+  return hex(value, empty);
 }

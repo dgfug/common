@@ -1,7 +1,11 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ExtractResult, keyExtractSuri } from './extractSuri';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import type { ExtractResult } from './extractSuri.js';
+
+import { keyExtractSuri } from './extractSuri.js';
 
 describe('keyExtractSuri', (): void => {
   it('does not extract from invalid suri', (): void => {

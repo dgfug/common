@@ -1,19 +1,11 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString, ToBn, ToBnOptions } from '../types';
-import type { BN } from './bn';
+import type { HexString, NumberOptions, ToBn } from '../types.js';
+import type { BN } from './bn.js';
 
-import { isNumber } from '../is/number';
-import { objectSpread } from '../object/spread';
-import { u8aToHex } from '../u8a';
-import { bnToU8a } from './toU8a';
-
-const ZERO_STR = '0x00';
-
-interface Options extends ToBnOptions {
-  bitLength?: number;
-}
+import { u8aToHex } from '../u8a/index.js';
+import { bnToU8a } from './toU8a.js';
 
 /**
  * @name bnToHex
@@ -30,21 +22,6 @@ interface Options extends ToBnOptions {
  * bnToHex(new BN(0x123456)); // => '0x123456'
  * ```
  */
-function bnToHex <ExtToBn extends ToBn> (value?: ExtToBn | BN | bigint | number | null, options?: Options): HexString;
-function bnToHex <ExtToBn extends ToBn> (value?: ExtToBn | BN | bigint | number | null, bitLength?: number, isLe?: boolean): HexString;
-function bnToHex <ExtToBn extends ToBn> (value?: ExtToBn | BN | bigint | number | null, arg1: number | Options = { bitLength: -1, isLe: false, isNegative: false }, arg2?: boolean): HexString {
-  if (!value) {
-    return ZERO_STR;
-  }
-
-  return u8aToHex(
-    bnToU8a(value, objectSpread(
-      { isLe: false, isNegative: false },
-      isNumber(arg1)
-        ? { bitLength: arg1, isLe: arg2 }
-        : arg1
-    ))
-  );
+export function bnToHex <ExtToBn extends ToBn> (value?: ExtToBn | BN | bigint | number | null, { bitLength = -1, isLe = false, isNegative = false }: NumberOptions = {}): HexString {
+  return u8aToHex(bnToU8a(value, { bitLength, isLe, isNegative }));
 }
-
-export { bnToHex };

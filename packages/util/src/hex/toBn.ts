@@ -1,18 +1,10 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { ToBnOptions } from '../types';
+import type { ToBnOptions } from '../types.js';
 
-import { BN } from '../bn/bn';
-import { isBoolean } from '../is/boolean';
-import { objectSpread } from '../object/spread';
-import { hexStripPrefix } from './stripPrefix';
-
-function reverse (value: string): string {
-  return (value.match(/.{1,2}/g) || [])
-    .reverse()
-    .join('');
-}
+import { BN } from '../bn/bn.js';
+import { hexStripPrefix } from './stripPrefix.js';
 
 /**
  * @name hexToBn
@@ -32,26 +24,17 @@ function reverse (value: string): string {
  * hexToBn('0x123480001f'); // => BN(0x123480001f)
  * ```
  */
-export function hexToBn (value?: string | null, options: ToBnOptions | boolean = { isLe: false, isNegative: false }): BN {
-  if (!value) {
+export function hexToBn (value?: string | null, { isLe = false, isNegative = false }: ToBnOptions = {}): BN {
+  if (!value || value === '0x') {
     return new BN(0);
   }
 
-  const _options: ToBnOptions = objectSpread(
-    { isLe: false, isNegative: false },
-    isBoolean(options)
-      ? { isLe: options }
-      : options
-  );
-  const _value = hexStripPrefix(value);
-
-  // FIXME: Use BN's 3rd argument `isLe` once this issue is fixed
-  // https://github.com/indutny/bn.js/issues/208
-  const bn = new BN((_options.isLe ? reverse(_value) : _value) || '00', 16);
+  const stripped = hexStripPrefix(value);
+  const bn = new BN(stripped, 16, isLe ? 'le' : 'be');
 
   // fromTwos takes as parameter the number of bits, which is the hex length
-  // multiplied by 4.
-  return _options.isNegative
-    ? bn.fromTwos(_value.length * 4)
+  // multiplied by 4 (2 bytes being 8 bits)
+  return isNegative
+    ? bn.fromTwos(stripped.length * 4)
     : bn;
 }

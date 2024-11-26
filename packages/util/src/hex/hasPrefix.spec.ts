@@ -1,12 +1,14 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { hexHasPrefix } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { hexHasPrefix } from './index.js';
 
 describe('hexHasPrefix', (): void => {
   it('returns true when hex prefix is found', (): void => {
     expect(
-      hexHasPrefix('0x123')
+      hexHasPrefix('0x1234')
     ).toEqual(true);
   });
 
@@ -24,8 +26,7 @@ describe('hexHasPrefix', (): void => {
 
   it('returns false when non-string value supplied', (): void => {
     expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-argument
-      hexHasPrefix(false as any)
+      hexHasPrefix(false as unknown as string)
     ).toEqual(false);
   });
 });

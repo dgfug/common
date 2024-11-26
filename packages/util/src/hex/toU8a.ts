@@ -1,11 +1,25 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString } from '../types';
+const CHR = '0123456789abcdef';
+const U8 = new Uint8Array(256);
+const U16 = new Uint8Array(256 * 256);
 
-import { assert } from '../assert';
-import { isHex } from '../is/hex';
-import { hexStripPrefix } from './stripPrefix';
+for (let i = 0, count = CHR.length; i < count; i++) {
+  U8[CHR[i].charCodeAt(0) | 0] = i | 0;
+
+  if (i > 9) {
+    U8[CHR[i].toUpperCase().charCodeAt(0) | 0] = i | 0;
+  }
+}
+
+for (let i = 0; i < 256; i++) {
+  const s = i << 8;
+
+  for (let j = 0; j < 256; j++) {
+    U16[s | j] = (U8[i] << 4) | U8[j];
+  }
+}
 
 /**
  * @name hexToU8a
@@ -22,25 +36,32 @@ import { hexStripPrefix } from './stripPrefix';
  * hexToU8a('0x80001f', 32); // Uint8Array([0x00, 0x80, 0x00, 0x1f])
  * ```
  */
-export function hexToU8a (_value?: HexString | string | null, bitLength = -1): Uint8Array {
-  if (!_value) {
+export function hexToU8a (value?: string | null, bitLength = -1): Uint8Array {
+  if (!value) {
     return new Uint8Array();
   }
 
-  assert(isHex(_value), () => `Expected hex value to convert, found '${_value}'`);
+  let s = value.startsWith('0x')
+    ? 2
+    : 0;
 
-  const value = hexStripPrefix(_value);
-  const valLength = value.length / 2;
-  const resultLength = Math.ceil(
+  const decLength = Math.ceil((value.length - s) / 2);
+  const endLength = Math.ceil(
     bitLength === -1
-      ? valLength
+      ? decLength
       : bitLength / 8
   );
-  const result = new Uint8Array(resultLength);
-  const offset = Math.max(0, resultLength - valLength);
+  const result = new Uint8Array(endLength);
+  const offset = endLength > decLength
+    ? endLength - decLength
+    : 0;
 
-  for (let index = 0; index < resultLength; index++) {
-    result[index + offset] = parseInt(value.substr(index * 2, 2), 16);
+  for (let i = offset; i < endLength; i++, s += 2) {
+    // The big factor here is actually the string lookups. If we do
+    // HEX_TO_U16[value.substring()] we get an 10x slowdown. In the
+    // same vein using charCodeAt (as opposed to value[s] or value.charAt(s)) is
+    // also the faster operation by at least 2x with the character map above
+    result[i] = U16[(value.charCodeAt(s) << 8) | value.charCodeAt(s + 1)];
   }
 
   return result;

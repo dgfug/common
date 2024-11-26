@@ -1,16 +1,19 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Logger, Logger$Data } from './types';
+import type { Logger } from './types.js';
 
-import { formatDate } from './format/formatDate';
-import { isBn } from './is/bn';
-import { isBuffer } from './is/buffer';
-import { isFunction } from './is/function';
-import { isObject } from './is/object';
-import { isU8a } from './is/u8a';
-import { u8aToHex } from './u8a/toHex';
-import { u8aToU8a } from './u8a/toU8a';
+import { xglobal } from '@polkadot/x-global';
+
+import { formatDate } from './format/formatDate.js';
+import { isBn } from './is/bn.js';
+import { isBuffer } from './is/buffer.js';
+import { isFunction } from './is/function.js';
+import { isObject } from './is/object.js';
+import { isU8a } from './is/u8a.js';
+import { u8aToHex } from './u8a/toHex.js';
+import { u8aToU8a } from './u8a/toU8a.js';
+import { noop } from './noop.js';
 
 type ConsoleType = 'error' | 'log' | 'warn';
 type LogType = ConsoleType | 'debug';
@@ -20,14 +23,14 @@ const logTo = {
   error: 'error',
   log: 'log',
   warn: 'warn'
-};
+} as const;
 
 function formatOther (value: unknown): unknown {
   if (value && isObject(value) && value.constructor === Object) {
     const result: Record<string, unknown> = {};
 
-    for (const k of Object.keys(value)) {
-      result[k] = loggerFormat(value[k]);
+    for (const [k, v] of Object.entries(value)) {
+      result[k] = loggerFormat(v);
     }
 
     return result;
@@ -58,28 +61,24 @@ function formatWithLength (maxLength: number): (v: unknown) => unknown {
 
     return r.length < maxLength
       ? v
-      : `${r.substr(0, maxLength)} ...`;
+      : `${r.substring(0, maxLength)} ...`;
   };
 }
 
-function apply (log: LogType, type: string, values: Logger$Data, maxSize = -1): void {
+function apply (log: LogType, type: string, values: unknown[], maxSize = -1): void {
   if (values.length === 1 && isFunction(values[0])) {
     const fnResult = values[0]() as unknown;
 
     return apply(log, type, Array.isArray(fnResult) ? fnResult : [fnResult], maxSize);
   }
 
-  console[logTo[log] as 'log'](
+  console[logTo[log]](
     formatDate(new Date()),
     type,
     ...values
       .map(loggerFormat)
       .map(formatWithLength(maxSize))
   );
-}
-
-function noop (): void {
-  // noop
 }
 
 function isDebugOn (e: string, type: string): boolean {
@@ -106,7 +105,7 @@ function isDebugOff (e: string, type: string): boolean {
   );
 }
 
-function getDebugFlag (env: string[], type: string): boolean {
+function getDebugFlag (env: readonly string[], type: string): boolean {
   let flag = false;
 
   for (const e of env) {
@@ -121,11 +120,10 @@ function getDebugFlag (env: string[], type: string): boolean {
 }
 
 function parseEnv (type: string): [boolean, number] {
-  const env = (typeof process === 'object' ? process : {}).env || {};
-  const maxSize = parseInt(env.DEBUG_MAX || '-1', 10);
+  const maxSize = parseInt(xglobal.process?.env?.['DEBUG_MAX'] || '-1', 10);
 
   return [
-    getDebugFlag((env.DEBUG || '').toLowerCase().split(','), type),
+    getDebugFlag((xglobal.process?.env?.['DEBUG'] || '').toLowerCase().split(','), type),
     isNaN(maxSize)
       ? -1
       : maxSize
@@ -141,22 +139,22 @@ function parseEnv (type: string): [boolean, number] {
  * <BR>
  *
  * ```javascript
- * import { logger } from '@polkadot';
+ * import { logger } from '@polkadot/util';
  *
  * const l = logger('test');
  * ```
  */
-export function logger (_type: string): Logger {
-  const type = `${_type.toUpperCase()}:`.padStart(16);
-  const [isDebug, maxSize] = parseEnv(_type.toLowerCase());
+export function logger (origin: string): Logger {
+  const type = `${origin.toUpperCase()}:`.padStart(16);
+  const [isDebug, maxSize] = parseEnv(origin.toLowerCase());
 
   return {
     debug: isDebug
-      ? (...values: Logger$Data) => apply('debug', type, values, maxSize)
+      ? (...values: unknown[]) => apply('debug', type, values, maxSize)
       : noop,
-    error: (...values: Logger$Data) => apply('error', type, values),
-    log: (...values: Logger$Data) => apply('log', type, values),
+    error: (...values: unknown[]) => apply('error', type, values),
+    log: (...values: unknown[]) => apply('log', type, values),
     noop,
-    warn: (...values: Logger$Data) => apply('warn', type, values)
+    warn: (...values: unknown[]) => apply('warn', type, values)
   };
 }

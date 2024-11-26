@@ -1,9 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BN } from '../bn/bn';
+import type { BN } from '../bn/bn.js';
 
-import { isFunction } from './function';
+import { isOnObject } from './helpers.js';
 
 interface Compact<T> {
   toBigInt (): bigint;
@@ -16,11 +16,4 @@ interface Compact<T> {
  * @name isCompact
  * @summary Tests for SCALE-Compact-like object instance.
  */
-export function isCompact <T> (value: unknown): value is Compact<T> {
-  return (
-    isFunction((value as Compact<T>).toBigInt) &&
-    isFunction((value as Compact<T>).toBn) &&
-    isFunction((value as Compact<T>).toNumber) &&
-    isFunction((value as Compact<T>).unwrap)
-  );
-}
+export const isCompact: <T> (value?: unknown) => value is Compact<T> = /*#__PURE__*/ isOnObject('toBigInt', 'toBn', 'toNumber', 'unwrap');

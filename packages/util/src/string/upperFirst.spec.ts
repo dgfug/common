@@ -1,7 +1,10 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { stringUpperFirst } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { perf } from '../test/index.js';
+import { stringUpperFirst } from './index.js';
 
 describe('stringUpperFirst', (): void => {
   it("uppers the first letter if it's a capital letter", (): void => {
@@ -33,4 +36,6 @@ describe('stringUpperFirst', (): void => {
       stringUpperFirst(null)
     ).toBe('');
   });
+
+  perf('stringUpperFirst', 1_000_000, [['helloWorldSomething']], stringUpperFirst);
 });

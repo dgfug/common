@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 /**
@@ -22,7 +22,7 @@
  * Note: we use *LOW BITS* of the LSB in LE encoding to encode the 2 bit key.
  */
 
-export { compactAddLength } from './addLength';
-export { compactStripLength } from './stripLength';
-export { compactFromU8a } from './fromU8a';
-export { compactToU8a } from './toU8a';
+export { compactAddLength } from './addLength.js';
+export { compactFromU8a, compactFromU8aLim } from './fromU8a.js';
+export { compactStripLength } from './stripLength.js';
+export { compactToU8a } from './toU8a.js';

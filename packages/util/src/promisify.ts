@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 /**
@@ -17,16 +17,14 @@
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function promisify <R = any> (self: unknown, fn: (...params: any) => any, ...params: any[]): Promise<R> {
+export function promisify <R = any> (self: unknown, fn: (...params: any[]) => any, ...params: any[]): Promise<R> {
   return new Promise((resolve, reject): void => {
-    const handler = (error: Error | null, result?: R): void => {
+    fn.apply(self, params.concat((error: Error | null, result?: R): void => {
       if (error) {
         reject(error);
       } else {
         resolve(result as R);
       }
-    };
-
-    fn.apply(self, params.concat(handler));
+    }));
   });
 }

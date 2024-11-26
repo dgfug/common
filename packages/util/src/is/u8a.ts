@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 /**
@@ -16,5 +16,10 @@
  * ```
  */
 export function isU8a (value?: unknown): value is Uint8Array {
-  return value instanceof Uint8Array;
+  // here we defer the instanceof check which is actually slightly
+  // slower than just checking the constrctor (direct instances)
+  return (
+    ((value && (value as Uint8Array).constructor) === Uint8Array) ||
+    value instanceof Uint8Array
+  );
 }

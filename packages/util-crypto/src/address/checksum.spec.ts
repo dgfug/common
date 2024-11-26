@@ -1,8 +1,10 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { base58Decode } from '../base58/decode';
-import { checkAddressChecksum } from './checksum';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { base58Decode } from '../base58/index.js';
+import { checkAddressChecksum } from './checksum.js';
 
 describe('checkAddressChecksum', (): void => {
   it('correctly extracts the info from a 1-byte-prefix address', (): void => {

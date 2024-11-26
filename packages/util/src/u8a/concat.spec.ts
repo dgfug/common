@@ -1,7 +1,15 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { u8aConcat } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { getRandomValues } from '@polkadot/x-randomvalues';
+
+import { arrayRange } from '../array/index.js';
+import { perf } from '../test/index.js';
+import { u8aConcat, u8aConcatStrict } from './index.js';
+
+const ptest = arrayRange(10).map(() => getRandomValues(new Uint8Array(32)));
 
 describe('u8aConcat', (): void => {
   it('concatenates arrays', (): void => {
@@ -27,4 +35,8 @@ describe('u8aConcat', (): void => {
       new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
     );
   });
+
+  perf('u8aConcat', 10000, [[ptest]], u8aConcat);
+  perf('u8aConcatStrict', 10000, [[[ptest]]], u8aConcatStrict);
+  perf('u8aConcatStrict (len)', 10000, [[[ptest], 320]], u8aConcatStrict);
 });

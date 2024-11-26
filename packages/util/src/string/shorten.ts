@@ -1,5 +1,7 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
+import type { AnyString } from '../types.js';
 
 /**
  * @name stringShorten
@@ -15,11 +17,8 @@
  * stringShorten('1234567890', 2); // => 12..90
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function stringShorten (value: String | string, prefixLength = 6): string {
-  if (value.length <= 2 + 2 * prefixLength) {
-    return value.toString();
-  }
-
-  return `${value.substr(0, prefixLength)}…${value.slice(-prefixLength)}`;
+export function stringShorten (value: AnyString, prefixLength = 6): string {
+  return value.length <= 2 + 2 * prefixLength
+    ? value.toString()
+    : `${value.substring(0, prefixLength)}…${value.slice(-prefixLength)}`;
 }

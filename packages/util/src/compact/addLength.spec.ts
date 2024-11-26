@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { compactAddLength } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { compactAddLength } from './index.js';
 
 describe('compactAddLength', (): void => {
   it('correctly adds the length prefix', (): void => {

@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { u8aSorted } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { u8aSorted } from './index.js';
 
 describe('u8aSorted', (): void => {
   it('sorts a simple set of u8a', (): void => {

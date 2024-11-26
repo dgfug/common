@@ -1,22 +1,12 @@
 {
   "author": "Jaco Greeff <jacogr@gmail.com>",
   "bugs": "https://github.com/polkadot-js/common/issues",
-  "contributors": [],
   "description": "A collection of useful utilities for @polkadot",
   "engines": {
-    "node": ">=14.0.0"
-  },
-  "exports": {
-    "./hex/toU8a": {
-      "node": {
-        "require": "./hex/toU8aBuffer.cjs",
-        "default": "./hex/toU8aBuffer.js"
-      }
-    }
+    "node": ">=18"
   },
   "homepage": "https://github.com/polkadot-js/common/tree/master/packages/util#readme",
   "license": "Apache-2.0",
-  "maintainers": [],
   "name": "@polkadot/util",
   "repository": {
     "directory": "packages/util",
@@ -24,19 +14,36 @@
     "url": "https://github.com/polkadot-js/common.git"
   },
   "sideEffects": [
-    "./detectPackage.js",
-    "./detectPackage.cjs"
+    "./packageDetect.js",
+    "./packageDetect.cjs"
   ],
   "type": "module",
-  "version": "7.8.3-2",
+  "version": "13.2.3",
   "main": "index.js",
+  "exports": {
+    "./hex/toU8a": {
+      "node": {
+        "require": "./cjs/hex/toU8aBuffer.js",
+        "default": "./hex/toU8aBuffer.js"
+      }
+    },
+    "./u8a/toHex": {
+      "node": {
+        "require": "./cjs/u8a/toHexBuffer.js",
+        "default": "./u8a/toHexBuffer.js"
+      }
+    }
+  },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
-    "@polkadot/x-textdecoder": "7.8.3-2",
-    "@polkadot/x-textencoder": "7.8.3-2",
-    "@types/bn.js": "^4.11.6",
-    "bn.js": "^4.12.0",
-    "camelcase": "^6.2.0",
-    "ip-regex": "^4.3.0"
+    "@polkadot/x-bigint": "13.2.3",
+    "@polkadot/x-global": "13.2.3",
+    "@polkadot/x-textdecoder": "13.2.3",
+    "@polkadot/x-textencoder": "13.2.3",
+    "@types/bn.js": "^5.1.6",
+    "bn.js": "^5.2.1",
+    "tslib": "^2.8.0"
+  },
+  "devDependencies": {
+    "@polkadot/x-randomvalues": "13.2.3"
   }
 }

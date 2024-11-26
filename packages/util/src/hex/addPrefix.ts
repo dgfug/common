@@ -1,9 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString } from '../types';
+import type { HexString } from '../types.js';
 
-import { hexHasPrefix } from './hasPrefix';
+import { hexHasPrefix } from './hasPrefix.js';
 
 /**
  * @name hexAddPrefix
@@ -20,9 +20,7 @@ import { hexHasPrefix } from './hasPrefix';
  * ```
  */
 export function hexAddPrefix (value?: string | null): HexString {
-  if (value && hexHasPrefix(value)) {
-    return value;
-  }
-
-  return `0x${value && value.length % 2 === 1 ? '0' : ''}${value || ''}`;
+  return value && hexHasPrefix(value)
+    ? value
+    : `0x${value && value.length % 2 === 1 ? '0' : ''}${value || ''}`;
 }

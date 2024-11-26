@@ -1,24 +1,20 @@
-// Copyright 2017-2021 @polkadot/hw-ledger authors & contributors
+// Copyright 2017-2024 @polkadot/hw-ledger authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { knownLedger } from '@polkadot/networks/defaults';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
 
-import { ledgerApps } from './defaults';
+import { supportedApps } from '@zondax/ledger-substrate';
 
-describe('defaults', (): void => {
-  it('has entries for each of the apps (hwledger -> networks)', (): void => {
-    expect(
-      Object.keys(knownLedger).filter((network) =>
-        !ledgerApps[network]
-      )
-    ).toEqual([]);
-  });
+import { prevLedgerRecord } from './defaults.js';
 
-  it('has entries for each of the apps (networks -> hwledger)', (): void => {
-    expect(
-      Object.keys(ledgerApps).filter((network) =>
-        !knownLedger[network]
-      )
-    ).toEqual([]);
-  });
+describe('ledgerApps', (): void => {
+  for (const k of Object.keys(prevLedgerRecord)) {
+    it(`${k} is available in @zondax/ledger-substrate`, (): void => {
+      expect(
+        supportedApps.find(({ name }) =>
+          name === prevLedgerRecord[k]
+        )
+      ).toBeDefined();
+    });
+  }
 });

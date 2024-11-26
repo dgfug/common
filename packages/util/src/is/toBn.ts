@@ -1,10 +1,8 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { ToBn } from '../types';
+import type { ToBn } from '../types.js';
 
-import { isFunction } from './function';
+import { isOn } from './helpers.js';
 
-export function isToBn (value?: unknown): value is ToBn {
-  return !!value && isFunction((value as ToBn).toBn);
-}
+export const isToBn = /*#__PURE__*/ isOn<ToBn>('toBn');

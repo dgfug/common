@@ -1,14 +1,7 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString } from '../types';
-
-import { u8aCmp } from './cmp';
-import { u8aToU8a } from './toU8a';
-
-function equals (a: Uint8Array, b: Uint8Array): boolean {
-  return (a.length === b.length) && (u8aCmp(a, b) === 0);
-}
+import { u8aToU8a } from './toU8a.js';
 
 /**
  * @name u8aEq
@@ -24,6 +17,30 @@ function equals (a: Uint8Array, b: Uint8Array): boolean {
  * u8aEq(new Uint8Array([0x68, 0x65]), new Uint8Array([0x68, 0x65])); // true
  * ```
  */
-export function u8aEq (a: HexString | Uint8Array | string, b: HexString | Uint8Array | string): boolean {
-  return equals(u8aToU8a(a), u8aToU8a(b));
+export function u8aEq (a: string | Uint8Array, b: string | Uint8Array): boolean {
+  const u8aa = u8aToU8a(a);
+  const u8ab = u8aToU8a(b);
+
+  if (u8aa.length === u8ab.length) {
+    const dvA = new DataView(u8aa.buffer, u8aa.byteOffset);
+    const dvB = new DataView(u8ab.buffer, u8ab.byteOffset);
+    const mod = (u8aa.length % 4) | 0;
+    const length = (u8aa.length - mod) | 0;
+
+    for (let i = 0; i < length; i += 4) {
+      if (dvA.getUint32(i) !== dvB.getUint32(i)) {
+        return false;
+      }
+    }
+
+    for (let i = length, count = u8aa.length; i < count; i++) {
+      if (u8aa[i] !== u8ab[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  return false;
 }

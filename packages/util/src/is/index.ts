@@ -1,31 +1,36 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 /**
  * @summary Type checking utilities
  */
-export { isArray } from './array';
-export { isAscii } from './ascii';
-export { isBigInt } from './bigInt';
-export { isBn } from './bn';
-export { isBuffer } from './buffer';
-export { isBoolean } from './boolean';
-export { isChildClass } from './childClass';
-export { isCompact } from './compact';
-export { isError } from './error';
-export { isFunction } from './function';
-export { isHex } from './hex';
-export { isInstanceOf } from './instanceOf';
-export { isIp } from './ip';
-export { isJsonObject } from './jsonObject';
-export { isNull } from './null';
-export { isNumber } from './number';
-export { isObject } from './object';
-export { isObservable } from './observable';
-export { isString } from './string';
-export { isTestChain } from './testChain';
-export { isToBn } from './toBn';
-export { isU8a } from './u8a';
-export { isUndefined } from './undefined';
-export { isUtf8 } from './utf8';
-export { isWasm } from './wasm';
+export { isArray } from './array.js';
+export { isAscii } from './ascii.js';
+export { isBigInt } from './bigInt.js';
+export { isBn } from './bn.js';
+export { isBoolean } from './boolean.js';
+export { isBuffer } from './buffer.js';
+export { isChildClass } from './childClass.js';
+export { isClass } from './class.js';
+export { isCodec } from './codec.js';
+export { isCompact } from './compact.js';
+export { isError } from './error.js';
+export { isFunction } from './function.js';
+export { isHex } from './hex.js';
+export { isInstanceOf } from './instanceOf.js';
+export { isIp } from './ip.js';
+export { isJsonObject } from './jsonObject.js';
+export { isNull } from './null.js';
+export { isNumber } from './number.js';
+export { isObject } from './object.js';
+export { isObservable } from './observable.js';
+export { isPromise } from './promise.js';
+export { isRiscV } from './riscv.js';
+export { isString } from './string.js';
+export { isTestChain } from './testChain.js';
+export { isToBigInt } from './toBigInt.js';
+export { isToBn } from './toBn.js';
+export { isU8a } from './u8a.js';
+export { isUndefined } from './undefined.js';
+export { isUtf8 } from './utf8.js';
+export { isWasm } from './wasm.js';

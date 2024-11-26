@@ -1,14 +1,21 @@
-// Copyright 2017-2021 @polkadot/networks authors & contributors
+// Copyright 2017-2024 @polkadot/networks authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { SubstrateNetwork } from './types';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
 
-import { knownGenesis, knownIcon, knownLedger, knownTestnet } from './defaults';
-import { allNetworks, availableNetworks, selectableNetworks } from '.';
+import type { SubstrateNetwork } from './types.js';
 
-describe('selectableNetworks', (): void => {
+import { knownGenesis, knownIcon, knownLedger, knownTestnet } from './defaults/index.js';
+import { allNetworks, availableNetworks, selectableNetworks } from './index.js';
+
+describe('availableNetworks', (): void => {
   it('has the correct starting order', (): void => {
-    expect(selectableNetworks.slice(0, 3).map(({ prefix }) => prefix)).toEqual([0, 2, 42]);
+    expect(availableNetworks.slice(0, 3).map(({ prefix }) => prefix)).toEqual([0, 2, 42]);
+  });
+
+  it('has a sorted list (first external, last external)', (): void => {
+    expect(availableNetworks[3].displayName).toEqual('3DP network');
+    expect(availableNetworks[availableNetworks.length - 1].displayName).toEqual('ZERO');
   });
 
   it('has no ignored networks', (): void => {
@@ -63,6 +70,28 @@ describe('selectableNetworks', (): void => {
     ).toEqual([]);
   });
 
+  it('has all the correct fields', (): void => {
+    expect(availableNetworks[0]).toEqual({
+      decimals: [10],
+      displayName: 'Polkadot Relay Chain',
+      genesisHash: [
+        '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3'
+      ],
+      hasLedgerSupport: true,
+      icon: 'polkadot',
+      isIgnored: false,
+      isTestnet: false,
+      network: 'polkadot',
+      prefix: 0,
+      slip44: 354,
+      standardAccount: '*25519',
+      symbols: ['DOT'],
+      website: 'https://polkadot.network'
+    });
+  });
+});
+
+describe('allNetworks', (): void => {
   it('has no ss58 duplicates', (): void => {
     const dupes: SubstrateNetwork[] = [];
     const uniques: SubstrateNetwork[] = [];
@@ -76,5 +105,16 @@ describe('selectableNetworks', (): void => {
     });
 
     expect(dupes).toEqual([]);
+  });
+});
+
+describe('selectableNetworks', (): void => {
+  it('has the correct starting order', (): void => {
+    expect(selectableNetworks.slice(0, 3).map(({ prefix }) => prefix)).toEqual([0, 2, 42]);
+  });
+
+  it('has a sorted list (first external, last external)', (): void => {
+    expect(selectableNetworks[3].displayName).toEqual('3DP network');
+    expect(selectableNetworks[selectableNetworks.length - 1].displayName).toEqual('Zeitgeist');
   });
 });

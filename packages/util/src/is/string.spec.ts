@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { isString } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { isString } from './index.js';
 
 describe('isString', (): void => {
   it('returns true on valid strings', (): void => {

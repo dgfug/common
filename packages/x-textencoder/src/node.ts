@@ -1,13 +1,13 @@
-// Copyright 2017-2021 @polkadot/x-textencoder authors & contributors
+// Copyright 2017-2024 @polkadot/x-textencoder authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import util from 'util';
+import util from 'node:util';
 
-import { xglobal } from '@polkadot/x-global';
+import { extractGlobal } from '@polkadot/x-global';
 
-export { packageInfo } from './packageInfo';
+export { packageInfo } from './packageInfo.js';
 
-class NodeFallback {
+class Fallback {
   #encoder: util.TextEncoder;
 
   constructor () {
@@ -16,14 +16,8 @@ class NodeFallback {
 
   // For a Jest 26.0.1 environment, Buffer !== Uint8Array
   encode (value: string): Uint8Array {
-    const encoded = this.#encoder.encode(value);
-
-    return Uint8Array.from(encoded);
+    return Uint8Array.from(this.#encoder.encode(value));
   }
 }
 
-export const TextEncoder = (
-  typeof xglobal.TextEncoder === 'undefined'
-    ? NodeFallback as unknown as typeof xglobal.TextEncoder
-    : xglobal.TextEncoder
-);
+export const TextEncoder = /*#__PURE__*/ extractGlobal('TextEncoder', Fallback);

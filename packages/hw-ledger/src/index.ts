@@ -1,6 +1,6 @@
-// Copyright 2017-2021 @polkadot/hw-ledger authors & contributors
+// Copyright 2017-2024 @polkadot/hw-ledger authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import './detectPackage';
+import './packageDetect.js';
 
-export * from './bundle';
+export * from './bundle.js';

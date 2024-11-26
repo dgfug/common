@@ -1,26 +1,28 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Logger } from './types';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
 
-import { BN } from './bn';
-import { logger, loggerFormat } from '.';
+import type { Logger } from './types.js';
+
+import { BN } from './bn/index.js';
+import { logger, loggerFormat } from './index.js';
 
 describe('logger', (): void => {
-  let dateMatch: unknown;
-  let prefixMatch: unknown;
+  const dateMatch = expect.stringMatching(/20[0-9]{2}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/);
+  const prefixMatch = expect.stringMatching(/TEST:/);
   let l: Logger;
   let ln: Logger;
   let spy: Partial<Console>;
-  let oldEnv: NodeJS.ProcessEnv;
+  let oldEnv: typeof process.env;
 
   beforeEach((): void => {
     oldEnv = process.env;
-    process.env.NODE_ENV = 'development';
+    process.env['NODE_ENV'] = 'development';
 
     ln = logger('notDebug');
 
-    process.env.DEBUG = 'test';
+    process.env['DEBUG'] = 'test';
 
     l = logger('test');
 
@@ -30,11 +32,6 @@ describe('logger', (): void => {
       warn: jest.fn()
     };
     global.console = spy as Console;
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    dateMatch = expect.stringMatching(/20[0-9]{2}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    prefixMatch = expect.stringMatching(/TEST:/);
   });
 
   afterEach((): void => {
@@ -117,7 +114,7 @@ describe('logger', (): void => {
   });
 
   it('does debug log when DEBUG partial specified', (): void => {
-    process.env.DEBUG = 'test*';
+    process.env['DEBUG'] = 'test*';
 
     l = logger('testing');
     l.debug('test');
@@ -130,7 +127,7 @@ describe('logger', (): void => {
   });
 
   it('does not debug log when non-matching DEBUG specified', (): void => {
-    process.env.DEBUG = 'blah';
+    process.env['DEBUG'] = 'blah';
 
     l = logger('test');
     l.debug('test');
@@ -139,7 +136,7 @@ describe('logger', (): void => {
   });
 
   it('does debug log when DEBUG=* specified', (): void => {
-    process.env.DEBUG = '*';
+    process.env['DEBUG'] = '*';
 
     l = logger('test');
     l.debug('test');
@@ -148,7 +145,7 @@ describe('logger', (): void => {
   });
 
   it('does not debug log when no process.env', (): void => {
-    process.env = undefined as unknown as NodeJS.ProcessEnv;
+    process.env = undefined as unknown as typeof process.env;
 
     l = logger('test');
     l.debug('test');
@@ -163,7 +160,7 @@ describe('logger', (): void => {
   });
 
   it('does not debug log when explicitly excluded', (): void => {
-    process.env.DEBUG = '*,-test';
+    process.env['DEBUG'] = '*,-test';
 
     l = logger('test');
     l.debug('test');
@@ -172,7 +169,7 @@ describe('logger', (): void => {
   });
 
   it('does not debug log when part of exclusion group', (): void => {
-    process.env.DEBUG = '*,-test:*';
+    process.env['DEBUG'] = '*,-test:*';
 
     l = logger('test:sub');
     l.debug('test');
@@ -181,7 +178,7 @@ describe('logger', (): void => {
   });
 
   it('does debug log when not part of exclusion groups', (): void => {
-    process.env.DEBUG = '*,-test:*,-tes,-a:*';
+    process.env['DEBUG'] = '*,-test:*,-tes,-a:*';
 
     l = logger('test');
     l.debug('test');

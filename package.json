@@ -1,40 +1,46 @@
 {
   "author": "Jaco Greeff <jacogr@gmail.com>",
   "bugs": "https://github.com/polkadot-js/common/issues",
+  "engines": {
+    "node": ">=18.14"
+  },
   "homepage": "https://github.com/polkadot-js/common#readme",
-  "license": "Apache-2",
-  "packageManager": "yarn@3.0.1",
+  "license": "Apache-2.0",
+  "packageManager": "yarn@4.5.1",
   "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/polkadot-js/common.git"
   },
   "sideEffects": false,
-  "version": "7.8.3-2",
+  "type": "module",
+  "version": "13.2.3",
+  "versions": {
+    "git": "13.2.3",
+    "npm": "13.2.3"
+  },
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "build": "polkadot-dev-build-ts",
+    "build:networks": "polkadot-dev-run-test packages/networks/src",
     "build:release": "polkadot-ci-ghact-build",
     "build:rollup": "polkadot-exec-rollup --config",
     "clean": "polkadot-dev-clean-build",
+    "deno": "yarn polkadot-dev-deno-map && yarn build && deno check --import-map=import_map.json mod.ts",
     "lint": "polkadot-dev-run-lint",
-    "networks:crosscheck": "polkadot-dev-run-test packages/networks/src/crosscheck",
-    "networks:sync": "yarn build && node packages/networks/scripts/fromSubstrate.mjs",
     "postinstall": "polkadot-dev-yarn-only",
-    "test": "polkadot-dev-run-test --coverage --runInBand --testPathIgnorePatterns crosscheck --testPathIgnorePatterns toMiniSecretCmp",
-    "test:mnemonicCmp": "polkadot-dev-run-test packages/util-crypto/src/mnemonic/toMiniSecretCmp.spec.ts",
-    "test:one": "polkadot-dev-run-test --runInBand"
+    "test": "polkadot-dev-run-test --env browser ^mnemonic/toMiniSecretCmp",
+    "test:mnemonicCmp": "polkadot-dev-run-test --env browser mnemonic/toMiniSecretCmp",
+    "test:node": "polkadot-dev-run-test --env browser ^mnemonic/toMiniSecretCmp",
+    "test:one": "polkadot-dev-run-test --env browser"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@polkadot/dev": "^0.63.28",
-    "@polkadot/ts": "^0.4.13",
-    "@types/ed2curve": "^0.2.2",
-    "@types/jest": "^27.0.2"
+    "@polkadot/dev": "^0.82.1",
+    "@types/node": "^22.7.5"
   },
   "resolutions": {
-    "typescript": "^4.4.4"
+    "typescript": "^5.5.4"
   }
 }

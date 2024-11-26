@@ -1,14 +1,10 @@
-// Copyright 2017-2021 @polkadot/x-textencoder authors & contributors
+// Copyright 2017-2024 @polkadot/x-textencoder authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { xglobal } from '@polkadot/x-global';
+import { extractGlobal } from '@polkadot/x-global';
 
-import { TextEncoder as Fallback } from './fallback';
+import { TextEncoder as Fallback } from './fallback.js';
 
-export { packageInfo } from './packageInfo';
+export { packageInfo } from './packageInfo.js';
 
-export const TextEncoder = (
-  typeof xglobal.TextEncoder === 'undefined'
-    ? Fallback as unknown as typeof xglobal.TextEncoder
-    : xglobal.TextEncoder
-);
+export const TextEncoder = /*#__PURE__*/ extractGlobal('TextEncoder', Fallback);

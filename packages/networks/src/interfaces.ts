@@ -1,10 +1,11 @@
-// Copyright 2017-2021 @polkadot/networks authors & contributors
+// Copyright 2017-2024 @polkadot/networks authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { KnownSubstrate, Network, SubstrateNetwork } from './types';
+import type { KnownSubstrate, Network, SubstrateNetwork } from './types.js';
 
-import { knownGenesis, knownIcon, knownLedger, knownTestnet } from './defaults';
-import { knownSubstrate } from './substrate';
+import knownSubstrate from '@substrate/ss58-registry';
+
+import { knownGenesis, knownIcon, knownLedger, knownTestnet } from './defaults/index.js';
 
 // These are known prefixes that are not sorted
 const UNSORTED = [0, 2, 42];
@@ -25,7 +26,14 @@ function toExpanded (o: KnownSubstrate): SubstrateNetwork {
 
   // filtering
   n.isTestnet = !!knownTestnet[network] || TESTNETS.includes(nameParts[nameParts.length - 1]);
-  n.isIgnored = n.isTestnet || (!(o.standardAccount && o.decimals && o.symbols) && o.prefix !== 42);
+  n.isIgnored = n.isTestnet || (
+    !(
+      o.standardAccount &&
+      o.decimals?.length &&
+      o.symbols?.length
+    ) &&
+    o.prefix !== 42
+  );
 
   return n;
 }
@@ -43,12 +51,12 @@ function sortNetworks (a: Network, b: Network): number {
   const isUnSortedB = UNSORTED.includes(b.prefix);
 
   return isUnSortedA === isUnSortedB
-    ? 0
+    ? isUnSortedA
+      ? 0
+      : a.displayName.localeCompare(b.displayName)
     : isUnSortedA
       ? -1
-      : isUnSortedB
-        ? 1
-        : a.displayName.localeCompare(b.displayName);
+      : 1;
 }
 
 // This is all the Substrate networks with our additional information

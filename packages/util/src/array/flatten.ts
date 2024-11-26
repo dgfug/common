@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 // This is supposed to be a faster concat...
@@ -18,21 +18,32 @@
  * arrayFlatten([[1, 2], [3, 4], [5]]); // [1, 2, 3, 4, 5]
  * ```
  */
-export function arrayFlatten <T> (arrays: T[][]): T[] {
+export function arrayFlatten <T> (arrays: readonly T[][]): T[] {
+  const num = arrays.length;
+
+  // shortcuts for the empty & single-entry case
+  if (num === 0) {
+    return [];
+  } else if (num === 1) {
+    return arrays[0];
+  }
+
   // pre-allocate based on the combined size
   let size = 0;
 
-  for (const a of arrays) {
-    size += a.length;
+  for (let i = 0; i < num; i++) {
+    size += arrays[i].length;
   }
 
   const output = new Array<T>(size);
-  let index = -1;
+  let i = -1;
 
-  for (const a of arrays) {
+  for (let j = 0; j < num; j++) {
+    const a = arrays[j];
+
     // instead of pushing, we just set the entries
-    for (let e = 0; e < a.length; e++) {
-      output[++index] = a[e];
+    for (let e = 0, count = a.length; e < count; e++) {
+      output[++i] = a[e];
     }
   }
 

@@ -1,8 +1,7 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { isFunction } from './is/function';
-import { isUndefined } from './is/undefined';
+import { isFunction } from './is/function.js';
 
 type MessageFn = () => string;
 
@@ -34,10 +33,18 @@ export function assert (condition: unknown, message: string | MessageFn): assert
 
 /**
  * @name assertReturn
- * @summart Returns when the value is not undefined, otherwise throws assertion error
+ * @description Returns when the value is not undefined/null, otherwise throws assertion error
  */
-export function assertReturn <T> (value: T | undefined, message: string | MessageFn): T {
-  assert(!isUndefined(value), message);
+export function assertReturn <T> (value: T | undefined | null, message: string | MessageFn): T {
+  assert(value !== undefined && value !== null, message);
 
   return value;
+}
+
+/**
+ * @name assertUnreachable
+ * @description An assertion helper that ensures all codepaths are followed
+ */
+export function assertUnreachable (x: never): never {
+  throw new Error(`This codepath should be unreachable. Unhandled input: ${x as unknown as string}`);
 }

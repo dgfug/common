@@ -1,13 +1,21 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { BN, bnToHex } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { BN, bnToHex } from './index.js';
 
 describe('bnToHex', (): void => {
   it('converts null values to 0x00', (): void => {
     expect(
       bnToHex(null)
     ).toBe('0x00');
+  });
+
+  it('converts null values to 0x00000000 (with bitLength)', (): void => {
+    expect(
+      bnToHex(null, { bitLength: 32 })
+    ).toBe('0x00000000');
   });
 
   it('converts BN values to a prefixed hex representation', (): void => {
@@ -18,14 +26,8 @@ describe('bnToHex', (): void => {
 
   it('converts BN values to a prefixed hex representation (bitLength)', (): void => {
     expect(
-      bnToHex(new BN(128), 16)
+      bnToHex(new BN(128), { bitLength: 16 })
     ).toBe('0x0080');
-  });
-
-  it('converts BN values to a prefixed hex representation (bitLength + le)', (): void => {
-    expect(
-      bnToHex(new BN(128), 16, true)
-    ).toBe('0x8000');
   });
 
   it('converts BN values to a prefixed hex representation (LE)', (): void => {
@@ -44,13 +46,5 @@ describe('bnToHex', (): void => {
     expect(
       bnToHex(new BN(-1234), { bitLength: 32, isNegative: true })
     ).toBe('0xfffffb2e');
-  });
-
-  it('handles backwards compatibility', (): void => {
-    expect(
-      bnToHex(new BN(1234), 32)
-    ).toBe(
-      bnToHex(new BN(1234), { bitLength: 32 })
-    );
   });
 });

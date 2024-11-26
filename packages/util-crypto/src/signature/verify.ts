@@ -1,15 +1,14 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString } from '@polkadot/util/types';
-import type { KeypairType, VerifyResult } from '../types';
+import type { KeypairType, VerifyResult } from '../types.js';
 
-import { assert, u8aIsWrapped, u8aToU8a, u8aUnwrapBytes, u8aWrapBytes } from '@polkadot/util';
+import { u8aIsWrapped, u8aToU8a, u8aUnwrapBytes, u8aWrapBytes } from '@polkadot/util';
 
-import { decodeAddress } from '../address/decode';
-import { naclVerify } from '../nacl/verify';
-import { schnorrkelVerify } from '../schnorrkel/verify';
-import { secp256k1Verify } from '../secp256k1/verify';
+import { decodeAddress } from '../address/decode.js';
+import { ed25519Verify } from '../ed25519/verify.js';
+import { secp256k1Verify } from '../secp256k1/verify.js';
+import { sr25519Verify } from '../sr25519/verify.js';
 
 interface VerifyInput {
   message: Uint8Array;
@@ -31,8 +30,8 @@ const VERIFIERS_ECDSA: Verifier[] = [
 ];
 
 const VERIFIERS: Verifier[] = [
-  ['ed25519', naclVerify],
-  ['sr25519', schnorrkelVerify],
+  ['ed25519', ed25519Verify],
+  ['sr25519', sr25519Verify],
   ...VERIFIERS_ECDSA
 ];
 
@@ -46,7 +45,7 @@ function verifyDetect (result: VerifyResult, { message, publicKey, signature }: 
 
         return true;
       }
-    } catch (error) {
+    } catch {
       // do nothing, result.isValid still set to false
     }
 
@@ -57,7 +56,9 @@ function verifyDetect (result: VerifyResult, { message, publicKey, signature }: 
 }
 
 function verifyMultisig (result: VerifyResult, { message, publicKey, signature }: VerifyInput): VerifyResult {
-  assert([0, 1, 2].includes(signature[0]), () => `Unknown crypto type, expected signature prefix [0..2], found ${signature[0]}`);
+  if (![0, 1, 2].includes(signature[0])) {
+    throw new Error(`Unknown crypto type, expected signature prefix [0..2], found ${signature[0]}`);
+  }
 
   const type = CRYPTO_TYPES[signature[0]] || 'none';
 
@@ -66,11 +67,13 @@ function verifyMultisig (result: VerifyResult, { message, publicKey, signature }
   try {
     result.isValid = {
       ecdsa: () => verifyDetect(result, { message, publicKey, signature: signature.subarray(1) }, VERIFIERS_ECDSA).isValid,
-      ed25519: () => naclVerify(message, signature.subarray(1), publicKey),
-      none: () => { throw Error('no verify for `none` crypto type'); },
-      sr25519: () => schnorrkelVerify(message, signature.subarray(1), publicKey)
+      ed25519: () => ed25519Verify(message, signature.subarray(1), publicKey),
+      none: () => {
+        throw Error('no verify for `none` crypto type');
+      },
+      sr25519: () => sr25519Verify(message, signature.subarray(1), publicKey)
     }[type]();
-  } catch (error) {
+  } catch {
     // ignore, result.isValid still set to false
   }
 
@@ -83,10 +86,12 @@ function getVerifyFn (signature: Uint8Array): VerifyFn {
     : verifyDetect;
 }
 
-export function signatureVerify (message: HexString | Uint8Array | string, signature: HexString | Uint8Array | string, addressOrPublicKey: HexString | Uint8Array | string): VerifyResult {
+export function signatureVerify (message: string | Uint8Array, signature: string | Uint8Array, addressOrPublicKey: string | Uint8Array): VerifyResult {
   const signatureU8a = u8aToU8a(signature);
 
-  assert([64, 65, 66].includes(signatureU8a.length), () => `Invalid signature length, expected [64..66] bytes, found ${signatureU8a.length}`);
+  if (![64, 65, 66].includes(signatureU8a.length)) {
+    throw new Error(`Invalid signature length, expected [64..66] bytes, found ${signatureU8a.length}`);
+  }
 
   const publicKey = decodeAddress(addressOrPublicKey);
   const input = { message: u8aToU8a(message), publicKey, signature: signatureU8a };

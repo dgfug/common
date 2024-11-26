@@ -1,14 +1,12 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { assert } from '@polkadot/util';
-
-import { DeriveJunction } from './DeriveJunction';
+import { DeriveJunction } from './DeriveJunction.js';
 
 const RE_JUNCTION = /\/(\/?)([^/]+)/g;
 
 export interface ExtractResult {
-  parts: null | string[];
+  parts: string[] | null;
   path: DeriveJunction[];
 }
 
@@ -24,11 +22,13 @@ export function keyExtractPath (derivePath: string): ExtractResult {
     constructed = parts.join('');
 
     for (const p of parts) {
-      path.push(DeriveJunction.from(p.substr(1)));
+      path.push(DeriveJunction.from(p.substring(1)));
     }
   }
 
-  assert(constructed === derivePath, () => `Re-constructed path "${constructed}" does not match input`);
+  if (constructed !== derivePath) {
+    throw new Error(`Re-constructed path "${constructed}" does not match input`);
+  }
 
   return {
     parts,

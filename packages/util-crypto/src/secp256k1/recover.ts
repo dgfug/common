@@ -1,17 +1,36 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { secp256k1 } from './secp256k1';
+import type { HashType } from './types.js';
+
+import { secp256k1 } from '@noble/curves/secp256k1';
+
+import { hasBigInt, u8aToU8a } from '@polkadot/util';
+import { isReady, secp256k1Recover as wasm } from '@polkadot/wasm-crypto';
+
+import { secp256k1Compress } from './compress.js';
+import { secp256k1Expand } from './expand.js';
 
 /**
  * @name secp256k1Recover
  * @description Recovers a publicKey from the supplied signature
  */
-export function secp256k1Recover (message: Uint8Array, signature: Uint8Array, recovery: number): Uint8Array {
-  return new Uint8Array(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-    secp256k1
-      .recoverPubKey(message, { r: signature.slice(0, 32), s: signature.slice(32, 64) }, recovery)
-      .encode(null, true)
-  );
+export function secp256k1Recover (msgHash: string | Uint8Array, signature: string | Uint8Array, recovery: number, hashType: HashType = 'blake2', onlyJs?: boolean): Uint8Array {
+  const sig = u8aToU8a(signature).subarray(0, 64);
+  const msg = u8aToU8a(msgHash);
+  const publicKey = !hasBigInt || (!onlyJs && isReady())
+    ? wasm(msg, sig, recovery)
+    : secp256k1.Signature
+      .fromCompact(sig)
+      .addRecoveryBit(recovery)
+      .recoverPublicKey(msg)
+      .toRawBytes();
+
+  if (!publicKey) {
+    throw new Error('Unable to recover publicKey from signature');
+  }
+
+  return hashType === 'keccak'
+    ? secp256k1Expand(publicKey, onlyJs)
+    : secp256k1Compress(publicKey, onlyJs);
 }

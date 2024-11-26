@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { hexToBn } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { hexToBn } from './index.js';
 
 describe('hexToBn', (): void => {
   it('converts prefixed hex values to BN', (): void => {
@@ -68,18 +70,5 @@ describe('hexToBn', (): void => {
     expect(
       hexToBn('0x0001000000000000', { isLe: true }).toNumber()
     ).toBe(256);
-  });
-
-  it('handles backwards compatibility', (): void => {
-    expect(
-      hexToBn('0x0001000000000000', false).eq(
-        hexToBn('0x0001000000000000', { isLe: false })
-      )
-    ).toBe(true);
-    expect(
-      hexToBn('0x0001000000000000', true).eq(
-        hexToBn('0x0001000000000000', { isLe: true })
-      )
-    ).toBe(true);
   });
 });

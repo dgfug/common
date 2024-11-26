@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { BN, bnToBn } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { BN, bnToBn } from './index.js';
 
 describe('bnToBn', (): void => {
   it('converts null values to 0x00', (): void => {

@@ -1,15 +1,16 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 /**
  * @summary Internal utilities to create and test for hex values
  */
 
-export { hexAddPrefix } from './addPrefix';
-export { hexFixLength } from './fixLength';
-export { hexHasPrefix } from './hasPrefix';
-export { hexStripPrefix } from './stripPrefix';
-export { hexToBn } from './toBn';
-export { hexToNumber } from './toNumber';
-export { hexToString } from './toString';
-export { hexToU8a } from './toU8a';
+export { hexAddPrefix } from './addPrefix.js';
+export { hexFixLength } from './fixLength.js';
+export { hexHasPrefix } from './hasPrefix.js';
+export { hexStripPrefix } from './stripPrefix.js';
+export { hexToBigInt } from './toBigInt.js';
+export { hexToBn } from './toBn.js';
+export { hexToNumber } from './toNumber.js';
+export { hexToString } from './toString.js';
+export { hexToU8a } from './toU8a.js';

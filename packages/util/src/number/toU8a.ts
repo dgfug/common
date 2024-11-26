@@ -1,10 +1,8 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { hexToU8a } from '../hex/toU8a';
-import { isNull } from '../is/null';
-import { isUndefined } from '../is/undefined';
-import { numberToHex } from './toHex';
+import { hexToU8a } from '../hex/toU8a.js';
+import { numberToHex } from './toHex.js';
 
 /**
  * @name numberToU8a
@@ -21,10 +19,6 @@ import { numberToHex } from './toHex';
  * ```
  */
 export function numberToU8a (value?: number | null, bitLength = -1): Uint8Array {
-  if (isUndefined(value) || isNull(value) || isNaN(value)) {
-    return new Uint8Array();
-  }
-
   return hexToU8a(
     numberToHex(value, bitLength)
   );

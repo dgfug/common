@@ -1,15 +1,13 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Keypair } from '../../types';
+import type { Keypair } from '../../types.js';
 
-import { assert } from '@polkadot/util';
-
-import { mnemonicValidate } from '../../mnemonic';
-import { naclKeypairFromSeed } from '../../nacl';
-import { HARDENED, hdValidatePath } from '../validatePath';
-import { ledgerDerivePrivate } from './derivePrivate';
-import { ledgerMaster } from './master';
+import { ed25519PairFromSeed } from '../../ed25519/index.js';
+import { mnemonicValidate } from '../../mnemonic/index.js';
+import { HARDENED, hdValidatePath } from '../validatePath.js';
+import { ledgerDerivePrivate } from './derivePrivate.js';
+import { ledgerMaster } from './master.js';
 
 export function hdLedger (_mnemonic: string, path: string): Keypair {
   const words = _mnemonic
@@ -17,14 +15,19 @@ export function hdLedger (_mnemonic: string, path: string): Keypair {
     .map((s) => s.trim())
     .filter((s) => s);
 
-  assert([12, 24, 25].includes(words.length), 'Expected a mnemonic with 24 words (or 25 including a password)');
+  if (![12, 24, 25].includes(words.length)) {
+    throw new Error('Expected a mnemonic with 24 words (or 25 including a password)');
+  }
 
   const [mnemonic, password] = words.length === 25
     ? [words.slice(0, 24).join(' '), words[24]]
     : [words.join(' '), ''];
 
-  assert(mnemonicValidate(mnemonic), 'Invalid mnemonic passed to ledger derivation');
-  assert(hdValidatePath(path), 'Invalid derivation path');
+  if (!mnemonicValidate(mnemonic)) {
+    throw new Error('Invalid mnemonic passed to ledger derivation');
+  } else if (!hdValidatePath(path)) {
+    throw new Error('Invalid derivation path');
+  }
 
   const parts = path.split('/').slice(1);
   let seed = ledgerMaster(mnemonic, password);
@@ -35,5 +38,5 @@ export function hdLedger (_mnemonic: string, path: string): Keypair {
     seed = ledgerDerivePrivate(seed, (n < HARDENED) ? (n + HARDENED) : n);
   }
 
-  return naclKeypairFromSeed(seed.slice(0, 32));
+  return ed25519PairFromSeed(seed.slice(0, 32));
 }

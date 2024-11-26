@@ -1,7 +1,11 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { ExtractResult, keyExtractPath } from './extractPath';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import type { ExtractResult } from './extractPath.js';
+
+import { keyExtractPath } from './extractPath.js';
 
 describe('keyExtractPath', (): void => {
   it('extracts properly from soft', (): void => {
@@ -33,13 +37,13 @@ describe('keyExtractPath', (): void => {
     expect(test.path[1].chainCode).toEqual(Uint8Array.from([2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]));
   });
 
-  it('does not extract from invalid paths', (): void => {
+  it('does not extract from invalid paths (1)', (): void => {
     expect(
       (): ExtractResult => keyExtractPath('1/2')
     ).toThrow(/does not match input/);
   });
 
-  it('does not extract from invalid paths', (): void => {
+  it('does not extract from invalid paths (2)', (): void => {
     expect(
       (): ExtractResult => keyExtractPath('hello')
     ).toThrow(/does not match input/);

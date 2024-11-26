@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { hexToU8a } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { hexToU8a } from './toU8aBuffer.js';
 
 describe('hexToU8a', (): void => {
   it('returns an empty Uint8Array when null provided', (): void => {
@@ -20,9 +22,9 @@ describe('hexToU8a', (): void => {
 
   it('returns a Uint8Array with the correct values (bitLength > provided)', (): void => {
     expect(
-      hexToU8a('0x80000a', 32)
+      hexToU8a('0x80000A', 64)
     ).toEqual(
-      new Uint8Array([0, 128, 0, 10])
+      new Uint8Array([0, 0, 0, 0, 0, 128, 0, 10])
     );
   });
 
@@ -32,11 +34,5 @@ describe('hexToU8a', (): void => {
     ).toEqual(
       new Uint8Array([128, 0])
     );
-  });
-
-  it('fails when non-hex value provided', (): void => {
-    expect(
-      (): Uint8Array => hexToU8a('notahex')
-    ).toThrow(/hex value to convert/);
   });
 });

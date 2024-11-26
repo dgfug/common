@@ -1,25 +1,27 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { numberToU8a } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { numberToU8a } from './index.js';
 
 describe('numberToU8a', (): void => {
   it('converts undefined to empty', (): void => {
     expect(
       numberToU8a()
-    ).toEqual(new Uint8Array());
+    ).toEqual(new Uint8Array(1));
   });
 
   it('converts null to empty', (): void => {
     expect(
       numberToU8a(null)
-    ).toEqual(new Uint8Array());
+    ).toEqual(new Uint8Array(1));
   });
 
   it('converts NaN to empty', (): void => {
     expect(
       numberToU8a(NaN)
-    ).toEqual(new Uint8Array());
+    ).toEqual(new Uint8Array(1));
   });
 
   it('converts 0 to u8a', (): void => {

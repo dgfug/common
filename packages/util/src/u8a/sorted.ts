@@ -1,7 +1,7 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { u8aCmp } from './cmp';
+import { u8aCmp } from './cmp.js';
 
 /**
  * @name u8aSorted

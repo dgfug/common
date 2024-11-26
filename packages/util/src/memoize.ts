@@ -1,10 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Memoized } from './types';
+import type { Memoized } from './types.js';
 
-import { isUndefined } from './is/undefined';
-import { stringify } from './stringify';
+import { stringify } from './stringify.js';
 
 interface Options {
   getInstanceId?: () => string;
@@ -14,6 +13,10 @@ function defaultGetId (): string {
   return 'none';
 }
 
+/**
+ * @name memoize
+ * @description Memomize the function with a specific instanceId
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function memoize <T, F extends (...args: any[]) => T> (fn: F, { getInstanceId = defaultGetId }: Options = {}): Memoized<F> {
   const cache: Record<string, Record<string, T>> = {};
@@ -26,7 +29,7 @@ export function memoize <T, F extends (...args: any[]) => T> (fn: F, { getInstan
       cache[instanceId] = {};
     }
 
-    if (isUndefined(cache[instanceId][stringParams])) {
+    if (cache[instanceId][stringParams] === undefined) {
       cache[instanceId][stringParams] = fn(...args);
     }
 
@@ -37,7 +40,7 @@ export function memoize <T, F extends (...args: any[]) => T> (fn: F, { getInstan
     const stringParams = stringify(args);
     const instanceId = getInstanceId();
 
-    if (cache[instanceId] && !isUndefined(cache[instanceId][stringParams])) {
+    if (cache[instanceId]?.[stringParams] !== undefined) {
       delete cache[instanceId][stringParams];
     }
   };

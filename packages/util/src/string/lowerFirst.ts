@@ -1,5 +1,17 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
+import type { AnyString } from '../types.js';
+
+import { CC_TO_LO, CC_TO_UP } from './camelCase.js';
+
+/** @internal */
+function converter (map: readonly string[]): (value?: AnyString | null) => string {
+  return (value?: AnyString | null): string =>
+    value
+      ? map[value.charCodeAt(0)] + value.slice(1)
+      : '';
+}
 
 /**
  * @name stringLowerFirst
@@ -15,9 +27,20 @@
  * stringLowerFirst('ABC'); // => 'aBC'
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function stringLowerFirst (value?: string | String | null): string {
-  return value
-    ? value.charAt(0).toLowerCase() + value.slice(1)
-    : '';
-}
+export const stringLowerFirst = /*#__PURE__*/ converter(CC_TO_LO);
+
+/**
+ * @name stringUpperFirst
+ * @summary Uppercase the first letter of a string
+ * @description
+ * Lowercase the first letter of a string
+ * @example
+ * <BR>
+ *
+ * ```javascript
+ * import { stringUpperFirst } from '@polkadot/util';
+ *
+ * stringUpperFirst('abc'); // => 'Abc'
+ * ```
+ */
+export const stringUpperFirst = /*#__PURE__*/ converter(CC_TO_UP);

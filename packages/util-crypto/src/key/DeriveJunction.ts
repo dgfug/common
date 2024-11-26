@@ -1,19 +1,14 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
-
-import type { HexString } from '@polkadot/util/types';
 
 import { BN, bnToU8a, compactAddLength, hexToU8a, isBigInt, isBn, isHex, isNumber, isString, stringToU8a } from '@polkadot/util';
 
-import { blake2AsU8a } from '../blake2/asU8a';
+import { blake2AsU8a } from '../blake2/asU8a.js';
+import { BN_LE_256_OPTS } from '../bn.js';
 
 const RE_NUMBER = /^\d+$/;
 
 const JUNCTION_ID_LEN = 32;
-const BN_OPTIONS = {
-  bitLength: 256,
-  isLe: true
-};
 
 export class DeriveJunction {
   readonly #chainCode: Uint8Array = new Uint8Array(32);
@@ -23,7 +18,7 @@ export class DeriveJunction {
   public static from (value: string): DeriveJunction {
     const result = new DeriveJunction();
     const [code, isHard] = value.startsWith('/')
-      ? [value.substr(1), true]
+      ? [value.substring(1), true]
       : [value, false];
 
     result.soft(
@@ -49,7 +44,7 @@ export class DeriveJunction {
     return !this.#isHard;
   }
 
-  public hard (value: HexString | number | string | bigint | BN | Uint8Array): DeriveJunction {
+  public hard (value: number | string | bigint | BN | Uint8Array): DeriveJunction {
     return this.soft(value).harden();
   }
 
@@ -59,9 +54,9 @@ export class DeriveJunction {
     return this;
   }
 
-  public soft (value: HexString | number | string | bigint | BN | Uint8Array): DeriveJunction {
+  public soft (value: number | string | bigint | BN | Uint8Array): DeriveJunction {
     if (isNumber(value) || isBn(value) || isBigInt(value)) {
-      return this.soft(bnToU8a(value, BN_OPTIONS));
+      return this.soft(bnToU8a(value, BN_LE_256_OPTS));
     } else if (isHex(value)) {
       return this.soft(hexToU8a(value));
     } else if (isString(value)) {

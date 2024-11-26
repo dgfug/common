@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import { getRandomValues } from '@polkadot/x-randomvalues';
+
+import { createAsHex } from '../helpers.js';
 
 /**
  * @name randomAsU8a
@@ -20,3 +22,9 @@ import { getRandomValues } from '@polkadot/x-randomvalues';
 export function randomAsU8a (length = 32): Uint8Array {
   return getRandomValues(new Uint8Array(length));
 }
+
+/**
+ * @name randomAsHex
+ * @description Creates a hex string filled with random bytes.
+ */
+export const randomAsHex = /*#__PURE__*/ createAsHex(randomAsU8a);

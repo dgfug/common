@@ -1,19 +1,15 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { hexFixLength } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { hexFixLength } from './index.js';
 
 describe('hexFixLength', (): void => {
   it('returns bitLength === -1 as-is', (): void => {
     expect(
       hexFixLength('0x12345678')
     ).toEqual('0x12345678');
-  });
-
-  it('returns bitLength === -1 as-is (adding missing 0)', (): void => {
-    expect(
-      hexFixLength('0x1234567')
-    ).toEqual('0x01234567');
   });
 
   it('does not change when bitlength === length', (): void => {

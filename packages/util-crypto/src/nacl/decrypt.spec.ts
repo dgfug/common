@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { naclDecrypt, naclEncrypt } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { naclDecrypt, naclEncrypt } from './index.js';
 
 describe('naclDecrypt', (): void => {
   it('decrypts a encrypted message', (): void => {

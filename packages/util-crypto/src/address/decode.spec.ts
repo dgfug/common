@@ -1,23 +1,19 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
 
 import { hexToU8a, stringToU8a, u8aToHex } from '@polkadot/util';
 
-import { createTestPairs, TestKeyringMap } from '../../../keyring/src/testingPairs';
-import { decodeAddress } from '.';
+import { ALICE_PUBLIC_SR } from './encode.spec.js';
+import { decodeAddress } from './index.js';
 
 describe('decodeAddress', (): void => {
-  let keyring: TestKeyringMap;
-
-  beforeAll((): void => {
-    keyring = createTestPairs({ type: 'sr25519' });
-  });
-
   it('decodes an address', (): void => {
     expect(
       decodeAddress('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
     ).toEqual(
-      keyring.alice.publicKey
+      ALICE_PUBLIC_SR
     );
   });
 

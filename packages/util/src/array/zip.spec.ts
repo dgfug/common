@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { arrayZip } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { arrayZip } from './index.js';
 
 describe('arrayZip', (): void => {
   it('zips a simple one', (): void => {

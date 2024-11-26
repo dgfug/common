@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { hexAddPrefix } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { hexAddPrefix } from './index.js';
 
 describe('hexAddPrefix', (): void => {
   it('does not add when prefix is available', (): void => {

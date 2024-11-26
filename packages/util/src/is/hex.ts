@@ -1,9 +1,11 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString } from '../types';
+import type { HexString } from '../types.js';
 
-const HEX_REGEX = /^0x[a-fA-F0-9]+$/;
+export const REGEX_HEX_PREFIXED = /^0x[\da-fA-F]+$/;
+
+export const REGEX_HEX_NOPREFIX = /^[\da-fA-F]+$/;
 
 /**
  * @name isHex
@@ -20,10 +22,15 @@ const HEX_REGEX = /^0x[a-fA-F0-9]+$/;
  * isHex('0x1234', 8); // => false
  * ```
  */
-export function isHex (value: unknown, bitLength = -1, ignoreLength = false): value is HexString {
-  return (typeof value === 'string' && (value === '0x' || HEX_REGEX.test(value)))
-    ? bitLength === -1
-      ? ((value.length % 2 === 0) || ignoreLength)
+export function isHex (value: unknown, bitLength = -1, ignoreLength?: boolean): value is HexString {
+  return (
+    typeof value === 'string' && (
+      value === '0x' ||
+      REGEX_HEX_PREFIXED.test(value)
+    )
+  ) && (
+    bitLength === -1
+      ? (ignoreLength || (value.length % 2 === 0))
       : (value.length === (2 + Math.ceil(bitLength / 4)))
-    : false;
+  );
 }

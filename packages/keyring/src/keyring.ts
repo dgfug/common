@@ -1,21 +1,21 @@
-// Copyright 2017-2021 @polkadot/keyring authors & contributors
+// Copyright 2017-2024 @polkadot/keyring authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { EncryptedJsonEncoding, Keypair, KeypairType } from '@polkadot/util-crypto/types';
-import type { KeyringInstance, KeyringOptions, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from './types';
+import type { KeyringInstance, KeyringOptions, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from './types.js';
 
-import { assert, hexToU8a, isHex, isUndefined, stringToU8a } from '@polkadot/util';
-import { base64Decode, decodeAddress, encodeAddress, ethereumEncode, hdEthereum, keyExtractSuri, keyFromPath, mnemonicToLegacySeed, mnemonicToMiniSecret, naclKeypairFromSeed as naclFromSeed, schnorrkelKeypairFromSeed as schnorrkelFromSeed, secp256k1KeypairFromSeed as secp256k1FromSeed } from '@polkadot/util-crypto';
+import { hexToU8a, isHex, stringToU8a } from '@polkadot/util';
+import { base64Decode, decodeAddress, ed25519PairFromSeed as ed25519FromSeed, encodeAddress, ethereumEncode, hdEthereum, keyExtractSuri, keyFromPath, mnemonicToLegacySeed, mnemonicToMiniSecret, secp256k1PairFromSeed as secp256k1FromSeed, sr25519PairFromSeed as sr25519FromSeed } from '@polkadot/util-crypto';
 
-import { DEV_PHRASE } from './defaults';
-import { createPair } from './pair';
-import { Pairs } from './pairs';
+import { createPair } from './pair/index.js';
+import { DEV_PHRASE } from './defaults.js';
+import { Pairs } from './pairs.js';
 
-const keypairFromSeed = {
+const PairFromSeed = {
   ecdsa: (seed: Uint8Array): Keypair => secp256k1FromSeed(seed),
-  ed25519: (seed: Uint8Array): Keypair => naclFromSeed(seed),
+  ed25519: (seed: Uint8Array): Keypair => ed25519FromSeed(seed),
   ethereum: (seed: Uint8Array): Keypair => secp256k1FromSeed(seed),
-  sr25519: (seed: Uint8Array): Keypair => schnorrkelFromSeed(seed)
+  sr25519: (seed: Uint8Array): Keypair => sr25519FromSeed(seed)
 };
 
 function pairToPublic ({ publicKey }: KeyringPair): Uint8Array {
@@ -43,14 +43,16 @@ export class Keyring implements KeyringInstance {
 
   readonly #type: KeypairType;
 
-  #ss58?: number;
+  #ss58?: number | undefined;
 
   public decodeAddress = decodeAddress;
 
   constructor (options: KeyringOptions = {}) {
     options.type = options.type || 'ed25519';
 
-    assert(['ecdsa', 'ethereum', 'ed25519', 'sr25519'].includes(options.type || 'undefined'), () => `Expected a keyring type of either 'ed25519', 'sr25519', 'ethereum' or 'ecdsa', found '${options.type || 'unknown'}`);
+    if (!['ecdsa', 'ethereum', 'ed25519', 'sr25519'].includes(options.type || 'undefined')) {
+      throw new Error(`Expected a keyring type of either 'ed25519', 'sr25519', 'ethereum' or 'ecdsa', found '${options.type || 'unknown'}`);
+    }
 
     this.#pairs = new Pairs();
     this.#ss58 = options.ss58Format;
@@ -142,7 +144,7 @@ export class Keyring implements KeyringInstance {
    */
   public addFromSeed (seed: Uint8Array, meta: KeyringPair$Meta = {}, type: KeypairType = this.type): KeyringPair {
     return this.addPair(
-      createPair({ toSS58: this.encodeAddress, type }, keypairFromSeed[type](seed), meta, null)
+      createPair({ toSS58: this.encodeAddress, type }, PairFromSeed[type](seed), meta, null)
     );
   }
 
@@ -162,7 +164,9 @@ export class Keyring implements KeyringInstance {
    * @description Creates a pair from a JSON keyfile
    */
   public createFromJson ({ address, encoded, encoding: { content, type, version }, meta }: KeyringPair$Json, ignoreChecksum?: boolean): KeyringPair {
-    assert(version !== '3' || content[0] === 'pkcs8', () => `Unable to decode non-pkcs8 type, [${content.join(',')}] found}`);
+    if (version === '3' && content[0] !== 'pkcs8') {
+      throw new Error(`Unable to decode non-pkcs8 type, [${content.join(',')}] found}`);
+    }
 
     const cryptoType = version === '0' || !Array.isArray(content)
       ? this.type
@@ -171,7 +175,9 @@ export class Keyring implements KeyringInstance {
       ? [type]
       : type;
 
-    assert(['ed25519', 'sr25519', 'ecdsa', 'ethereum'].includes(cryptoType), () => `Unknown crypto type ${cryptoType}`);
+    if (!['ed25519', 'sr25519', 'ecdsa', 'ethereum'].includes(cryptoType)) {
+      throw new Error(`Unknown crypto type ${cryptoType}`);
+    }
 
     // Here the address and publicKey are 32 bytes and isomorphic. This is why the address field needs to be the public key for ethereum type pairs
     const publicKey = isHex(address)
@@ -216,7 +222,9 @@ export class Keyring implements KeyringInstance {
           ? mnemonicToLegacySeed(phrase, '', false, 64)
           : mnemonicToMiniSecret(phrase, password);
       } else {
-        assert(phrase.length <= 32, 'specified phrase is not a valid mnemonic and is invalid as a raw seed at > 32 bytes');
+        if (phrase.length > 32) {
+          throw new Error('specified phrase is not a valid mnemonic and is invalid as a raw seed at > 32 bytes');
+        }
 
         seed = stringToU8a(phrase.padEnd(32));
       }
@@ -224,9 +232,9 @@ export class Keyring implements KeyringInstance {
 
     const derived = type === 'ethereum'
       ? isPhraseHex
-        ? keypairFromSeed[type](seed) // for eth, if the private key is provided as suri, it must be derived only once
+        ? PairFromSeed[type](seed) // for eth, if the private key is provided as suri, it must be derived only once
         : hdEthereum(seed, derivePath.substring(1))
-      : keyFromPath(keypairFromSeed[type](seed), path, type);
+      : keyFromPath(PairFromSeed[type](seed), path, type);
 
     return createPair({ toSS58: this.encodeAddress, type }, derived, meta, null);
   }
@@ -238,7 +246,7 @@ export class Keyring implements KeyringInstance {
   public encodeAddress = (address: Uint8Array | string, ss58Format?: number): string => {
     return this.type === 'ethereum'
       ? ethereumEncode(address)
-      : encodeAddress(address, isUndefined(ss58Format) ? this.#ss58 : ss58Format);
+      : encodeAddress(address, ss58Format ?? this.#ss58);
   };
 
   /**

@@ -1,13 +1,14 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString, ToBn } from '../types';
+import type { ToBigInt, ToBn } from '../types.js';
 
-import { hexToBn } from '../hex/toBn';
-import { isBigInt } from '../is/bigInt';
-import { isHex } from '../is/hex';
-import { isToBn } from '../is/toBn';
-import { BN } from './bn';
+import { hexToBn } from '../hex/toBn.js';
+import { isBigInt } from '../is/bigInt.js';
+import { isHex } from '../is/hex.js';
+import { isToBigInt } from '../is/toBigInt.js';
+import { isToBn } from '../is/toBn.js';
+import { BN } from './bn.js';
 
 /**
  * @name bnToBn
@@ -25,18 +26,18 @@ import { BN } from './bn';
  * bnToBn(new BN(0x1234)); // => BN(0x1234)
  * ```
  */
-export function bnToBn <ExtToBn extends ToBn> (value?: HexString | ExtToBn | BN | bigint | string | number | null): BN {
-  if (!value) {
-    return new BN(0);
-  } else if (isHex(value)) {
-    return hexToBn(value.toString());
-  } else if (isBigInt(value)) {
-    return new BN(value.toString());
-  }
-
-  return BN.isBN(value)
-    ? value
-    : isToBn(value)
-      ? value.toBn()
-      : new BN(value);
+export function bnToBn <ExtToBn extends ToBigInt | ToBn> (value?: ExtToBn | BN | bigint | string | number | null): BN {
+  return value
+    ? BN.isBN(value)
+      ? value
+      : isHex(value)
+        ? hexToBn(value.toString())
+        : isBigInt(value)
+          ? new BN(value.toString())
+          : isToBn(value)
+            ? value.toBn()
+            : isToBigInt(value)
+              ? new BN(value.toBigInt().toString())
+              : new BN(value)
+    : new BN(0);
 }

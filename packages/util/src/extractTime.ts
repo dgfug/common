@@ -1,70 +1,53 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Time } from './types';
+import type { Time } from './types.js';
 
-import { objectSpread } from './object/spread';
+const MIN_MS = 60 * 1000;
+const HR_MS = MIN_MS * 60;
+const DAY_MS = HR_MS * 24;
+const ZERO: Time = { days: 0, hours: 0, milliseconds: 0, minutes: 0, seconds: 0 };
 
-const HRS = 60 * 60;
-const DAY = HRS * 24;
-
-/**
- * @name addTime
- * @summary Add together two Time arrays
- */
-
-function addTime (a: Time, b: Time): Time {
+/** @internal */
+function add (a: Partial<Time>, b: Time): Time {
   return {
-    days: a.days + b.days,
-    hours: a.hours + b.hours,
-    milliseconds: a.milliseconds + b.milliseconds,
-    minutes: a.minutes + b.minutes,
-    seconds: a.seconds + b.seconds
+    days: (a.days || 0) + b.days,
+    hours: (a.hours || 0) + b.hours,
+    milliseconds: (a.milliseconds || 0) + b.milliseconds,
+    minutes: (a.minutes || 0) + b.minutes,
+    seconds: (a.seconds || 0) + b.seconds
   };
 }
 
-const ZERO: Time = { days: 0, hours: 0, milliseconds: 0, minutes: 0, seconds: 0 };
+/** @internal */
+function extractSecs (ms: number): Time {
+  const s = ms / 1000;
 
-function extractDays (milliseconds: number, hrs: number): Time {
-  const days = Math.floor(hrs / 24);
+  if (s < 60) {
+    const seconds = ~~s;
 
-  return addTime(objectSpread({}, ZERO, { days }), extractTime(milliseconds - (days * DAY * 1000)));
-}
-
-function extractHrs (milliseconds: number, mins: number): Time {
-  const hrs = mins / 60;
-
-  if (hrs < 24) {
-    const hours = Math.floor(hrs);
-
-    return addTime(objectSpread({}, ZERO, { hours }), extractTime(milliseconds - (hours * HRS * 1000)));
+    return add({ seconds }, extractTime(ms - (seconds * 1000)));
   }
 
-  return extractDays(milliseconds, hrs);
-}
+  const m = s / 60;
 
-function extractMins (milliseconds: number, secs: number): Time {
-  const mins = secs / 60;
+  if (m < 60) {
+    const minutes = ~~m;
 
-  if (mins < 60) {
-    const minutes = Math.floor(mins);
-
-    return addTime(objectSpread({}, ZERO, { minutes }), extractTime(milliseconds - (minutes * 60 * 1000)));
+    return add({ minutes }, extractTime(ms - (minutes * MIN_MS)));
   }
 
-  return extractHrs(milliseconds, mins);
-}
+  const h = m / 60;
 
-function extractSecs (milliseconds: number): Time {
-  const secs = milliseconds / 1000;
+  if (h < 24) {
+    const hours = ~~h;
 
-  if (secs < 60) {
-    const seconds = Math.floor(secs);
-
-    return addTime(objectSpread({}, ZERO, { seconds }), extractTime(milliseconds - (seconds * 1000)));
+    return add({ hours }, extractTime(ms - (hours * HR_MS)));
   }
 
-  return extractMins(milliseconds, secs);
+  const days = ~~(h / 24);
+
+  return add({ days }, extractTime(ms - (days * DAY_MS)));
 }
 
 /**
@@ -80,11 +63,9 @@ function extractSecs (milliseconds: number): Time {
  * ```
  */
 export function extractTime (milliseconds?: number): Time {
-  if (!milliseconds) {
-    return ZERO;
-  } else if (milliseconds < 1000) {
-    return objectSpread({}, ZERO, { milliseconds });
-  }
-
-  return extractSecs(milliseconds);
+  return !milliseconds
+    ? ZERO
+    : milliseconds < 1000
+      ? add({ milliseconds }, ZERO)
+      : extractSecs(milliseconds);
 }

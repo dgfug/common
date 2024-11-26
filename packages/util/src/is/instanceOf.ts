@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 /**
@@ -16,6 +16,9 @@
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function isInstanceOf (value: unknown, clazz: Function): boolean {
-  return value instanceof clazz;
+export function isInstanceOf (value: unknown, Clazz: Function): boolean {
+  return (
+    ((value && (value as Record<string, unknown>).constructor) === Clazz) ||
+    value instanceof Clazz
+  );
 }

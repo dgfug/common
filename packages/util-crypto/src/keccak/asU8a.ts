@@ -1,12 +1,11 @@
-// Copyright 2017-2021 @polkadot/util-crypto authors & contributors
+// Copyright 2017-2024 @polkadot/util-crypto authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString } from '@polkadot/util/types';
+import { keccak_256 as keccak256Js, keccak_512 as keccak512Js } from '@noble/hashes/sha3';
 
-import js from 'js-sha3';
+import { keccak256, keccak512 } from '@polkadot/wasm-crypto';
 
-import { u8aToU8a } from '@polkadot/util';
-import { isReady, keccak256 } from '@polkadot/wasm-crypto';
+import { createAsHex, createBitHasher, createDualHasher } from '../helpers.js';
 
 /**
  * @name keccakAsU8a
@@ -22,12 +21,25 @@ import { isReady, keccak256 } from '@polkadot/wasm-crypto';
  * keccakAsU8a('123'); // => Uint8Array
  * ```
  */
-export function keccakAsU8a (value: HexString | Buffer | Uint8Array | string, bitLength: 256 | 512 = 256, onlyJs = false): Uint8Array {
-  const is256 = bitLength === 256;
+export const keccakAsU8a = /*#__PURE__*/ createDualHasher(
+  { 256: keccak256, 512: keccak512 },
+  { 256: keccak256Js, 512: keccak512Js }
+);
 
-  return isReady() && is256 && !onlyJs
-    ? keccak256(u8aToU8a(value))
-    : new Uint8Array(
-      (is256 ? js.keccak256 : js.keccak512).update(u8aToU8a(value)).arrayBuffer()
-    );
-}
+/**
+ * @name keccak256AsU8a
+ * @description Creates a keccak256 Uint8Array from the input.
+ */
+export const keccak256AsU8a = /*#__PURE__*/ createBitHasher(256, keccakAsU8a);
+
+/**
+ * @name keccak512AsU8a
+ * @description Creates a keccak512 Uint8Array from the input.
+ */
+export const keccak512AsU8a = /*#__PURE__*/ createBitHasher(512, keccakAsU8a);
+
+/**
+ * @name keccakAsHex
+ * @description Creates a keccak hex string from the input.
+ */
+export const keccakAsHex = /*#__PURE__*/ createAsHex(keccakAsU8a);

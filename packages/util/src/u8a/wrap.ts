@@ -1,20 +1,26 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 // Originally from https://github.com/polkadot-js/extension/pull/743
 
-import type { U8aLike } from '../types';
+import type { U8aLike } from '../types.js';
 
-import { u8aConcat } from './concat';
-import { u8aEq } from './eq';
-import { u8aToU8a } from './toU8a';
+import { u8aConcatStrict } from './concat.js';
+import { u8aEq } from './eq.js';
+import { u8aToU8a } from './toU8a.js';
 
-export const U8A_WRAP_ETHEREUM = u8aToU8a('\x19Ethereum Signed Message:\n');
-export const U8A_WRAP_PREFIX = u8aToU8a('<Bytes>');
-export const U8A_WRAP_POSTFIX = u8aToU8a('</Bytes>');
+/** @internal */
+export const U8A_WRAP_ETHEREUM = /*#__PURE__*/ u8aToU8a('\x19Ethereum Signed Message:\n');
+
+/** @internal */
+export const U8A_WRAP_PREFIX = /*#__PURE__*/ u8aToU8a('<Bytes>');
+
+/** @internal */
+export const U8A_WRAP_POSTFIX = /*#__PURE__*/ u8aToU8a('</Bytes>');
 
 const WRAP_LEN = U8A_WRAP_PREFIX.length + U8A_WRAP_POSTFIX.length;
 
+/** @internal */
 export function u8aIsWrapped (u8a: Uint8Array, withEthereum: boolean): boolean {
   return (
     (
@@ -30,6 +36,10 @@ export function u8aIsWrapped (u8a: Uint8Array, withEthereum: boolean): boolean {
   );
 }
 
+/**
+ * @name u8aUnwrapBytes
+ * @description Removes all <Bytes>...</Bytes> wrappers from the supplied value
+ */
 export function u8aUnwrapBytes (bytes: U8aLike): Uint8Array {
   const u8a = u8aToU8a(bytes);
 
@@ -39,11 +49,17 @@ export function u8aUnwrapBytes (bytes: U8aLike): Uint8Array {
     : u8a;
 }
 
+/**
+ * @name u8aWrapBytes
+ * @description
+ * Adds a <Bytes>...</Bytes> wrapper to the supplied value, if
+ * - We don't already have a Bytes wrapper
+ * - The message is not an Ethereum-style message
+ */
 export function u8aWrapBytes (bytes: U8aLike): Uint8Array {
   const u8a = u8aToU8a(bytes);
 
-  // if Ethereum-wrapping, we don't add our wrapping bytes
   return u8aIsWrapped(u8a, true)
     ? u8a
-    : u8aConcat(U8A_WRAP_PREFIX, u8a, U8A_WRAP_POSTFIX);
+    : u8aConcatStrict([U8A_WRAP_PREFIX, u8a, U8A_WRAP_POSTFIX]);
 }

@@ -1,9 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString } from '../types';
+import type { HexString } from '../types.js';
 
-import { isHex } from '../is/hex';
+import { isHex } from '../is/hex.js';
 
 /**
  * @name hexHasPrefix
@@ -20,5 +20,5 @@ import { isHex } from '../is/hex';
  * ```
  */
 export function hexHasPrefix (value?: string | null): value is HexString {
-  return !!(value && isHex(value, -1, true) && value.substr(0, 2) === '0x');
+  return !!value && isHex(value, -1);
 }

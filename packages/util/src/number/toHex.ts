@@ -1,11 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { HexString } from '../types';
+import type { HexString } from '../types.js';
 
-import { hexFixLength } from '../hex/fixLength';
-import { isNull } from '../is/null';
-import { isUndefined } from '../is/undefined';
+import { hexFixLength } from '../hex/fixLength.js';
 
 /**
  * @name numberToHex
@@ -23,9 +21,7 @@ import { isUndefined } from '../is/undefined';
  * ```
  */
 export function numberToHex (value?: number | null, bitLength = -1): HexString {
-  if (isUndefined(value) || isNull(value) || isNaN(value)) {
-    return '0x';
-  }
+  const hex = (!value || Number.isNaN(value) ? 0 : value).toString(16);
 
-  return hexFixLength(value.toString(16), bitLength, true);
+  return hexFixLength(hex.length % 2 ? `0${hex}` : hex, bitLength, true);
 }

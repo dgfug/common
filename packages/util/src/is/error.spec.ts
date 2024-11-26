@@ -1,7 +1,9 @@
-// Copyright 2017-2021 @polkadot/util authors & contributors
+// Copyright 2017-2024 @polkadot/util authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { isError } from '.';
+/// <reference types="@polkadot/dev-test/globals.d.ts" />
+
+import { isError } from './index.js';
 
 describe('isError', (): void => {
   it('returns true when an Error value', (): void => {
